@@ -11,7 +11,7 @@ Encoding: UTF-8
 LazyData: true
 Depends:
   R (>= 3.6),
-  CytoGLMM,
+  CytoGLMM
 Imports:
   dplyr,
   ggplot2,
