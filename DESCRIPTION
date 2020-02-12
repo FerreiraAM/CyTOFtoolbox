@@ -1,0 +1,27 @@
+Package: CyTOFtoolbox
+Type: Package
+Title: Tools box for the analysis of CyTOF data
+Version: 0.1.0
+Authors@R: person("Anne-Muad", "Ferreira", email = "anne-maud.ferreirat@stanford.edu",
+                  role = c("aut", "cre"))
+Description: This package regroups many tools for the analysis of CyTOF data.
+  It is use in the laboratory of Prof. Catherine Blish. 
+License: LGPL-3
+Encoding: UTF-8
+LazyData: true
+Depends:
+  R (>= 3.6),
+  CytoGLMM,
+Imports:
+  dplyr,
+  ggplot2,
+  ggrepel,
+  magrittr,
+  tidyr,
+  tidyverse
+Suggests:
+    SummarizedExperiment,
+    knitr,
+    rmarkdown
+RoxygenNote: 7.0.2
+VignetteBuilder: knitr

@@ -1,0 +1,25 @@
+#' Results of the GLMM  on a subset of the Aghaeepour et al. (2017) dataset
+#'
+#' A cytoglmm object containing the results of the  Generalized Linear Mixed
+#' Model (GLMM) with donor random effects from CytoGLMM package for a subset of
+#' the Aghaeepour et al. (2017) dataset.
+#' The subset consits into: 16 women; samples from the first and third
+#' trimester of their pregnancy stimulated by IFNalpha.
+#'
+#' @format A cytoglmm object:
+#' \describe{
+#'   \item{glmmfit}{mhglm, fit of the model}
+#'   \item{df_samples_subset}{tbl, susbet of the Aghaeepour et al 2017 dataset}
+#'   \item{protein_names}{vector, protein names}
+#'   \item{condition}{character, term which correspond to the comparison of interest}
+#'   \item{group}{character, donor as random effects}
+#'   \item{covariate_names}{NULL}
+#'   \item{cell_n_min}{numeric, Inf}
+#'   \item{cell_n_subsample}{numeric, 1000}
+#'   \item{seed}{numeric, 56026}
+#'   \item{num_cores}{numeric, 4}
+#'
+#'   ...
+#' }
+#' @source \url{https://zenodo.org/record/2652578/files/se_aghaeepour2017immune.Rdata}
+"CytoGLMM_glmm_fit_aghaeepour2017immune"
