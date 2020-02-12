@@ -2,7 +2,7 @@
 
 An R package regrouping tools to perfom CyTOF data analysis.
 
-# Installation
+## Installation
 
 The R-package itself can be installed from source by using the devtools package. This also allows
 building vignettes.
@@ -18,6 +18,10 @@ Note: Be sure to have install the CytoGLMM package.
 devtools::install_github("ChristofSeiler/CytoGLMM")
 ```
 
-# Summary
+## Summary
 
-In this package, there are the functions to create the volcano plot (complementary plot to the cytoglmm analysis).
+In this package, multiple functions have been created to complement the existing workflow:
+
+### Vocano plot
+
+- Volcano plot as a complementary plot to the cytoglmm analysis.
