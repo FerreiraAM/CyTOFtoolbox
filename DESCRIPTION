@@ -10,9 +10,9 @@ License: LGPL-3
 Encoding: UTF-8
 LazyData: true
 Depends:
-  R (>= 3.6),
-  CytoGLMM
+  R (>= 3.6)
 Imports:
+  CytoGLMM,
   dplyr,
   ggplot2,
   ggrepel,
