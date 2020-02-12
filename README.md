@@ -7,11 +7,15 @@ An R package regrouping tools to perfom CyTOF data analysis.
 The R-package itself can be installed from source by using the devtools package. This also allows
 building vignettes.
 ```
-# minimal install without vignettes
-devtools::install_github("FerreiraAM-stanford/CyTOFtoolbox")
+# The package is private, so be sure to use the token
+devtools::install_github("FerreiraAM-stanford/CyTOFtoolbox",
+  auth_token = "1da45a4220297a9c55caf0d64794a87b3cd10c3a", 
+  build_vignettes = TRUE)
+```
 
-# install with building vignettes and also installing suggested dependencies
-devtools::install_github("FerreiraAM-stanford/CyTOFtoolbox", build_vignettes = TRUE, dependencies = TRUE)
+Note: Be sure to have install the CytoGLMM package.
+```
+devtools::install_github("ChristofSeiler/CytoGLMM")
 ```
 
 # Summary
