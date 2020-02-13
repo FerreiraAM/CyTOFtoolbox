@@ -1,0 +1,21 @@
+---
+title: "lCustering"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{clustering}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup, warning = FALSE, message = FALSE}
+library(CyTOFtoolbox)
+```
+
+# Introduction
