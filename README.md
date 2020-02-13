@@ -26,3 +26,7 @@ In this package, multiple functions have been created to complement the existing
 ### Vocano plot
 
 - Volcano plot as a complementary plot to the cytoglmm analysis.
+- To access the vignette: 
+```
+vignette("volcano-plot", package = "CyTOFtoolbox")
+```
