@@ -20,8 +20,9 @@ Imports:
   tidyr,
   tidyverse
 Suggests:
-    SummarizedExperiment,
-    knitr,
-    rmarkdown
+  CATALYST,
+  knitr,
+  rmarkdown,
+  SummarizedExperiment
 RoxygenNote: 7.0.2
 VignetteBuilder: knitr
