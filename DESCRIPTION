@@ -23,6 +23,8 @@ Suggests:
   CATALYST,
   knitr,
   rmarkdown,
-  SummarizedExperiment
+  SingleCellExperiment,
+  SummarizedExperiment,
+  uwot
 RoxygenNote: 7.0.2
 VignetteBuilder: knitr
