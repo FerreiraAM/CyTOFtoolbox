@@ -1,5 +1,5 @@
 ---
-title: "lCustering"
+title: "Clustering"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{clustering}
@@ -16,6 +16,53 @@ knitr::opts_chunk$set(
 
 ```{r setup, warning = FALSE, message = FALSE}
 library(CyTOFtoolbox)
+library(CATALYST)
 ```
 
 # Introduction
+
+This vignette retakes the 
+[workflow of CATALYST](https://bioconductor.org/packages/release/bioc/vignettes/CATALYST/inst/doc/differential_analysis.html) 
+for the clustering. The clustering is performed using a combination of two 
+algorithms: `FlowSOM` clustering and `ConsensusClusterPlus` metaclustering.
+
+The vignette proposes functions to modify the results visualizations:
+
+- UMAP;
+- Heatmaps.
+
+# Data
+
+We use the same data as proposed in the `CATALYST` workflow and prepare the data.
+
+The dataset is the `Bodenmiller_BCR_XL` dataset originally from Bodenmiller et al. (2012).
+
+```{r load_data, warning = FALSE, message = FALSE}
+# Load data
+data(PBMC_fs, PBMC_panel, PBMC_md)
+# Prepare data
+sce_Bodenmiller <- prepData(PBMC_fs, PBMC_panel, PBMC_md)
+```
+
+# Clustering analysis 
+
+To perfom the clustering, we need to specify the type markers on which the clustering
+will be perfomed.
+
+```{r clustering}
+# Specify markers to use for clustering
+type_markers(sce_Bodenmiller)
+# Cluster
+sce_Bodenmiller <- cluster(sce_Bodenmiller, 
+                           features = type_markers(sce_Bodenmiller),
+                           xdim = 10, ydim = 10, maxK = 20, 
+                           verbose = FALSE, seed = 1)
+```
+
+Based on the delta aera plot which represent the stability gained when using
+$k$ clusters, we can determine the *optimal* number of cluster:
+
+```{r delta_aera_plot}
+metadata(sce_Bodenmiller)$delta_area
+```
+
