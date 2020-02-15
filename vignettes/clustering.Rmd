@@ -17,6 +17,9 @@ knitr::opts_chunk$set(
 ```{r setup, warning = FALSE, message = FALSE}
 library(CyTOFtoolbox)
 library(CATALYST)
+library(uwot)
+library(SingleCellExperiment)
+library(ggplot2)
 ```
 
 # Introduction
@@ -31,7 +34,9 @@ The vignette proposes functions to modify the results visualizations:
 - UMAP;
 - Heatmaps.
 
-# Data
+# Data preprocessing
+
+## Data 
 
 We use the same data as proposed in the `CATALYST` workflow and prepare the data.
 
@@ -44,7 +49,7 @@ data(PBMC_fs, PBMC_panel, PBMC_md)
 sce_Bodenmiller <- prepData(PBMC_fs, PBMC_panel, PBMC_md)
 ```
 
-# Clustering analysis 
+## Clustering analysis 
 
 To perfom the clustering, we need to specify the type markers on which the clustering
 will be perfomed.
@@ -56,13 +61,72 @@ type_markers(sce_Bodenmiller)
 sce_Bodenmiller <- cluster(sce_Bodenmiller, 
                            features = type_markers(sce_Bodenmiller),
                            xdim = 10, ydim = 10, maxK = 20, 
-                           verbose = FALSE, seed = 1)
+                           verbose = FALSE, seed = 1234)
 ```
 
 Based on the delta aera plot which represent the stability gained when using
 $k$ clusters, we can determine the *optimal* number of cluster:
 
 ```{r delta_aera_plot}
+# Print the delta area plot
 metadata(sce_Bodenmiller)$delta_area
+```
+
+## Dimensionality reduction with UMAP
+
+Dimension reduction is computed with UMAP.
+
+```{r UMAP}
+# Extract data from sce object
+umap_Bodenmiller_input_data <- t(assay(sce_Bodenmiller))
+# UMAP dimensionality reduction
+set.seed(1234)
+dr_umap_Bodenmiller <- uwot::umap(umap_Bodenmiller_input_data, n_neighbors = 20, min_dist = 0.1)
+# Add the dimensionality reduction to the SCE
+colnames(dr_umap_Bodenmiller) <- c("X1", "X2")
+reducedDims(sce_Bodenmiller) <- list("UMAP" = dr_umap_Bodenmiller)
+```
+
+# Visualization
+
+## Clusters
+
+```{r}
+# Extract DR info 
+dr <- "UMAP" # input parameter
+Bodenmiller_dr_values <- reducedDim(sce_Bodenmiller, dr)
+## Extract colnames
+names_dr <- colnames(Bodenmiller_dr_values)
+# Combine with experiment info
+## Combine colData with dimension reduction values
+Bodenmiller_expinfo_dr_values <- data.frame(colData(sce_Bodenmiller),
+                                            Bodenmiller_dr_values)
+# Get cluster IDs info
+Bodenmiller_cluster_name <- "meta8"
+Bodenmiller_sce_metacluster_ids <- as.data.frame(cluster_ids(sce_Bodenmiller,
+                                                             Bodenmiller_cluster_name))
+colnames(Bodenmiller_sce_metacluster_ids) <- Bodenmiller_cluster_name
+# Combine with experiment info and DR
+Bodenmiller_expinfo_dr_metacluster_values <- data.frame(Bodenmiller_expinfo_dr_values,
+                                                        Bodenmiller_sce_metacluster_ids)
+
+
+## Point size
+point_size <- 0.2
+## Point transparency
+point_alpha <- 0.1
+## CATALYST colors for meta-cluster
+catalyst_col <- CATALYST:::.cluster_cols
+# Plot
+ggplot(Bodenmiller_expinfo_dr_metacluster_values, aes_string(x = names_dr[1], y = names_dr[2])) +
+  geom_point(aes(col = meta8), size = 2, alpha = point_alpha, pch = 16) +
+  scale_color_manual(values = catalyst_col, name = "8 meta-clusters") +
+  labs(x = paste(dr, "1"), y = paste(dr, "2")) + 
+  theme_bw() + 
+  guides(colour = guide_legend(override.aes = list(size = 30, alpha = 1))) +
+  theme(axis.text = element_text(size = 70), axis.title = element_text(size = 80), 
+        legend.title = element_text(size = 80), legend.text = element_text(size = 70),
+        axis.ticks.length= unit(0.8, "cm"), axis.ticks = element_line(size = 2),
+        panel.border = element_rect(size = 2), panel.grid.major = element_blank()) 
 ```
 
