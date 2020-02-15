@@ -1,10 +1,14 @@
 #' Results of the GLMM  on a subset of the Aghaeepour et al. (2017) dataset
 #'
-#' A cytoglmm object containing the results of the  Generalized Linear Mixed
+#' A cytoglmm object containing the results of the Generalized Linear Mixed
 #' Model (GLMM) with donor random effects from CytoGLMM package for a subset of
 #' the Aghaeepour et al. (2017) dataset.
 #' The subset consits into: 16 women; samples from the first and third
 #' trimester of their pregnancy stimulated by IFNalpha.
+#' 
+#' @docType data
+#'
+#' @usage data(CytoGLMM_glmm_fit_aghaeepour2017immune)
 #'
 #' @format A cytoglmm object:
 #' \describe{
