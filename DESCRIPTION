@@ -20,15 +20,17 @@ Imports:
   ggrepel,
   magrittr,
   RColorBrewer,
-  scales,
   tidyr,
   tidyverse
 Suggests:
   CATALYST,
+  grid,
   knitr,
   rmarkdown,
   SingleCellExperiment,
   SummarizedExperiment,
+  tibble,
+  scales,
   uwot
 RoxygenNote: 7.0.2
 VignetteBuilder: knitr
