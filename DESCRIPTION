@@ -20,6 +20,7 @@ Imports:
   ggrepel,
   magrittr,
   RColorBrewer,
+  SummarizedExperiment,
   tidyr,
   tidyverse
 Suggests:
@@ -28,7 +29,6 @@ Suggests:
   knitr,
   rmarkdown,
   SingleCellExperiment,
-  SummarizedExperiment,
   tibble,
   scales,
   uwot
