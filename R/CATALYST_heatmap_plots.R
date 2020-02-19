@@ -1,10 +1,9 @@
-# Create function to plot the DA test heatmap
+# Create function to plot the DA test heatmap.
 
-#' Plot the heatmap of the DA test
+#' Plot the heatmap of the DA test.
 #'
 #' @param x SingleCellExperiment.
 #' @param y List, results of the diffcyt DA test.
-#' @param comparison Character, on which comparison the DA test has been performed.
 #' @param top_n Numeric, number of top cluster to display (by default top_n = 20).
 #' @param all Logical, if TRUE all the clusters are displayed 
 #' (if TRUE, top_n is ignored; by default all = FALSE).
@@ -17,9 +16,12 @@
 #' (By default show_sample_ID = TRUE).
 #' @return HeatmapList-class object.
 #' @export
-myplotDAheatmap <- function(x, y, comparison, top_n = 20,
+plotDAheatmap <- function(x, y, top_n = 20,
                             all = FALSE, th = 0.05, normalize = TRUE,
                             order = TRUE, show_sample_ID = TRUE){
+  
+# @param comparison Character, on which comparison the DA test has been performed.
+
   # Check if the input is an SCE object and contains cluster's information
   CATALYST:::.check_sce(x)
   # Extract expression values of the SCE
@@ -39,7 +41,7 @@ myplotDAheatmap <- function(x, y, comparison, top_n = 20,
   # Check that the meta cluster used for the DA test in the SCE object
   k <- CATALYST:::.check_validity_of_k(x, k)
   # Extract the cluster information about each cell
-  x$cluster_id <- cluster_ids(x, k)
+  x$cluster_id <- CATALYST::cluster_ids(x, k)
   # Extract the metadata information about each cell 
   factors <- dplyr::select(as.data.frame(colData(x)), -c("sample_id", 
                                                          "cluster_id"))
@@ -131,9 +133,9 @@ myplotDAheatmap <- function(x, y, comparison, top_n = 20,
   # Get the colors for the different levels
   colors_for_levels <- sample(scales::hue_pal()(sum(nlvls)))
   # Assign a color to each levels
-  uniq_combinaison_lvls <- unique(tidyr::gather(df, 
+  uniq_combinaison_lvls <- suppressMessages(unique(tidyr::gather(df, 
                                                 key = "comparison", 
-                                                value = "levels"))
+                                                value = "levels")))
   colors_withinfo <- cbind(colors_for_levels, uniq_combinaison_lvls)
   # As list
   cols <- sapply(names(nlvls), FUN = function(onecomp){
@@ -146,7 +148,7 @@ myplotDAheatmap <- function(x, y, comparison, top_n = 20,
                                   show_legend = c(TRUE, show_sample_ID, TRUE))
   # PLot the heatmap 
   myheatmap <- Heatmap(matrix = frqs,
-                       col = rev(brewer.pal(9, "RdGy")),
+                       col = rev(RColorBrewer::brewer.pal(9, "RdGy")),
                        name = paste0("normalized\n"[normalize], "frequency"),
                        cluster_columns = FALSE, 
                        column_title = "samples", 
@@ -179,7 +181,7 @@ myplotDAheatmap <- function(x, y, comparison, top_n = 20,
                       row_names_side = "right")
   # Combine
   main <- "Differential abundance tests between clusters"
-  suppressWarnings(draw(myheatmap + row_anno, column_title = main, 
+  suppressWarnings(ComplexHeatmap::draw(myheatmap + row_anno, column_title = main, 
                         auto_adjust = FALSE, column_title_gp = gpar(fontface = "bold", 
                                                                     fontsize = 12)))
 }
