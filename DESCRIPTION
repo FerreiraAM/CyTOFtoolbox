@@ -12,25 +12,26 @@ LazyData: true
 Depends:
   R (>= 3.6)
 Imports:
+  CATALYST,
   CytoGLMM,
   ComplexHeatmap,
   diffcyt,
   dplyr,
   ggplot2,
   ggrepel,
+  grid,
   magrittr,
   RColorBrewer,
+  SingleCellExperiment,
   SummarizedExperiment,
+  S4Vectors,
+  scales,
+  tibble,
   tidyr,
   tidyverse
 Suggests:
-  CATALYST,
-  grid,
   knitr,
   rmarkdown,
-  SingleCellExperiment,
-  tibble,
-  scales,
   uwot
 RoxygenNote: 7.0.2
 VignetteBuilder: knitr
