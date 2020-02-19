@@ -5,8 +5,8 @@
 #' Add 0.05 to the cyTOF values
 #' (in prevention of the log transformation that will be apply)
 #'
-#' @param x Numeric, vector
-#' @return Numeric, vector
+#' @param x Numeric, vector.
+#' @return Numeric, vector.
 function_add_05 <- function(x){
   x + 0.5
 }

@@ -3,7 +3,7 @@
 \docType{data}
 \name{CytoGLMM_glmm_fit_aghaeepour2017immune}
 \alias{CytoGLMM_glmm_fit_aghaeepour2017immune}
-\title{Results of the Generalized Linear Mixed Model (GLMM) on a subset of the Aghaeepour et al. (2017) dataset}
+\title{Results of the GLMM  on a subset of the Aghaeepour et al. (2017) dataset}
 \format{A cytoglmm object:
 \describe{
   \item{glmmfit}{mhglm, fit of the model}
@@ -23,11 +23,11 @@
 \url{https://zenodo.org/record/2652578/files/se_aghaeepour2017immune.Rdata}
 }
 \usage{
-CytoGLMM_glmm_fit_aghaeepour2017immune
+data(CytoGLMM_glmm_fit_aghaeepour2017immune)
 }
 \description{
-A cytoglmm object containing the results of the GLMM
-with donor random effects from CytoGLMM package for a subset of
+A cytoglmm object containing the results of the Generalized Linear Mixed
+Model (GLMM) with donor random effects from CytoGLMM package for a subset of
 the Aghaeepour et al. (2017) dataset.
 The subset consits into: 16 women; samples from the first and third
 trimester of their pregnancy stimulated by IFNalpha.
