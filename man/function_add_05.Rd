@@ -8,10 +8,10 @@
 function_add_05(x)
 }
 \arguments{
-\item{x}{Numeric, vector}
+\item{x}{Numeric, vector.}
 }
 \value{
-Numeric, vector
+Numeric, vector.
 }
 \description{
 Add 0.05 to the cyTOF values
