@@ -14,6 +14,7 @@ Depends:
 Imports:
   CytoGLMM,
   ComplexHeatmap,
+  diffcyt,
   dplyr,
   ggplot2,
   ggrepel,
