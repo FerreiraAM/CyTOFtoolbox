@@ -13,10 +13,13 @@ Depends:
   R (>= 3.6)
 Imports:
   CytoGLMM,
+  ComplexHeatmap,
   dplyr,
   ggplot2,
   ggrepel,
   magrittr,
+  RColorBrewer,
+  scales,
   tidyr,
   tidyverse
 Suggests:
