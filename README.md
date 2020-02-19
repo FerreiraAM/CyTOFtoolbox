@@ -30,3 +30,12 @@ In this package, multiple functions have been created to complement the existing
 ```
 vignette("volcano-plot", package = "CyTOFtoolbox")
 ```
+
+### Clustering
+
+- Modified heatmap plot of the differential abundance (DA) test results from 
+`CATALYST` package.
+- To access the vignette:
+```
+vignette("clustering", package = "CyTOFtoolbox")
+```
