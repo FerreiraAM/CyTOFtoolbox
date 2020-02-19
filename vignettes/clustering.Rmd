@@ -10,7 +10,9 @@ vignette: >
 ```{r, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
-  comment = "#>"
+  comment = "#>",
+  fig.width=8, 
+  fig.height=5
 )
 ```
 
@@ -173,7 +175,7 @@ dev.off()
 ## DA test heatmap
 
 ```{r}
-# Heatmap of DA testing results
+# Heatmap of the DA test results
 ## median (arcsinh-transformed) cell-type marker expressions (across all samples)
 ## relative cluster abundances by samples
 plotDiffHeatmap(sce_Bodenmiller, 
@@ -182,5 +184,9 @@ plotDiffHeatmap(sce_Bodenmiller,
                 normalize = TRUE, 
                 hm1 = FALSE, 
                 row_anno = TRUE)
+# Modified heatmap of the DA test results
+plotDAheatmap(x = sce_Bodenmiller,
+                y = res_DA_Bodenmiller,
+                all = TRUE)
 ```
  
