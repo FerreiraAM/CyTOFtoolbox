@@ -9,6 +9,7 @@ plotDAheatmap(
   x,
   y,
   top_n = 20,
+  comparison,
   all = FALSE,
   th = 0.05,
   normalize = TRUE,
@@ -22,6 +23,8 @@ plotDAheatmap(
 \item{y}{List, results of the diffcyt DA test.}
 
 \item{top_n}{Numeric, number of top cluster to display (by default top_n = 20).}
+
+\item{comparison}{Character, on which comparison the DA test has been performed.}
 
 \item{all}{Logical, if TRUE all the clusters are displayed 
 (if TRUE, top_n is ignored; by default all = FALSE).}

@@ -4,12 +4,20 @@
 \alias{plot_metaclusters}
 \title{Plot clusters.}
 \usage{
-plot_metaclusters(df, metacluster, point_size = 0.5, point_alpha = 0.5)
+plot_metaclusters(
+  df,
+  metacluster,
+  dr = "UMAP",
+  point_size = 0.5,
+  point_alpha = 0.5
+)
 }
 \arguments{
 \item{df}{Data.frame, output of the extract_SCE_info function.}
 
 \item{metacluster}{Character, metacluster to visualize.}
+
+\item{dr}{Character, dimensionality reduction to use (by default dr = UMAP").}
 
 \item{point_size}{Numeric, (by default = 0.5)}
 
