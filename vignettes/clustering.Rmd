@@ -119,7 +119,7 @@ function can be used.
 
 ## Clusters
 
-```{r}
+```{r plot_cluster, eval = TRUE}
 # Extract SCE information before plotting
 Bodenmiller_expinfo_dr_metacluster_values <- extract_SCE_info(sce = sce_Bodenmiller,
                                                               metacluster = "meta8")
@@ -150,7 +150,7 @@ dev.off()
 
 ## DA test heatmap
 
-```{r}
+```{r DA_test_heatmap}
 # Heatmap of the DA test results
 ## median (arcsinh-transformed) cell-type marker expressions (across all samples)
 ## relative cluster abundances by samples
@@ -162,7 +162,8 @@ plotDiffHeatmap(sce_Bodenmiller,
                 row_anno = TRUE)
 # Modified heatmap of the DA test results
 plotDAheatmap(x = sce_Bodenmiller,
-                y = res_DA_Bodenmiller,
-                all = TRUE)
+              y = res_DA_Bodenmiller, 
+              comparison = "condition",
+              all = TRUE)
 ```
  
