@@ -1,4 +1,4 @@
-# Create function to plot the DA test heatmap.
+#' Plot the DA test heatmap.
 
 #' Plot the heatmap of the DA test.
 #'
