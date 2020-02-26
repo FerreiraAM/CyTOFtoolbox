@@ -5,6 +5,7 @@
 #' @param x SingleCellExperiment.
 #' @param y List, results of the diffcyt DA test.
 #' @param top_n Numeric, number of top cluster to display (by default top_n = 20).
+#' @param comparison Character, on which comparison the DA test has been performed.
 #' @param all Logical, if TRUE all the clusters are displayed 
 #' (if TRUE, top_n is ignored; by default all = FALSE).
 #' @param th Numeric, p-value threshold (by default = 0.05).
@@ -16,11 +17,9 @@
 #' (By default show_sample_ID = TRUE).
 #' @return HeatmapList-class object.
 #' @export
-plotDAheatmap <- function(x, y, top_n = 20,
+plotDAheatmap <- function(x, y, top_n = 20, comparison,
                             all = FALSE, th = 0.05, normalize = TRUE,
                             order = TRUE, show_sample_ID = TRUE){
-  
-# @param comparison Character, on which comparison the DA test has been performed.
 
   # Check if the input is an SCE object and contains cluster's information
   CATALYST:::.check_sce(x)
