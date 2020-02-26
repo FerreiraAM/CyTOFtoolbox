@@ -120,40 +120,16 @@ function can be used.
 ## Clusters
 
 ```{r}
-# Extract DR info 
-dr <- "UMAP" # input parameter
-Bodenmiller_dr_values <- reducedDim(sce_Bodenmiller, dr)
-## Extract colnames
-names_dr <- colnames(Bodenmiller_dr_values)
-# Combine with experiment info
-## Combine colData with dimension reduction values
-Bodenmiller_expinfo_dr_values <- data.frame(colData(sce_Bodenmiller),
-                                            Bodenmiller_dr_values)
-# Get cluster IDs info
-Bodenmiller_cluster_name <- "meta8"
-Bodenmiller_sce_metacluster_ids <- as.data.frame(cluster_ids(sce_Bodenmiller,
-                                                             Bodenmiller_cluster_name))
-colnames(Bodenmiller_sce_metacluster_ids) <- Bodenmiller_cluster_name
-# Combine with experiment info and DR
-Bodenmiller_expinfo_dr_metacluster_values <- data.frame(Bodenmiller_expinfo_dr_values,
-                                                        Bodenmiller_sce_metacluster_ids)
+# Extract SCE information before plotting
+Bodenmiller_expinfo_dr_metacluster_values <- extract_SCE_info(sce = sce_Bodenmiller,
+                                                              metacluster = "meta8")
 
-
-## Point size
-point_size <- 0.5
-## Point transparency
-point_alpha <- 0.5
-## CATALYST colors for meta-cluster 
-## (keeping the cluster colors defined by the CATALYST package)
-catalyst_col <- CATALYST:::.cluster_cols
 # Plot
-ggplot(Bodenmiller_expinfo_dr_metacluster_values, aes_string(x = names_dr[1], y = names_dr[2])) +
-  geom_point(aes(col = meta8), size = point_size, alpha = point_alpha, pch = 16) +
-  scale_color_manual(values = catalyst_col, name = "8 meta-clusters") +
-  labs(x = paste(dr, "1"), y = paste(dr, "2")) + 
-  theme_bw() + 
-  guides(colour = guide_legend(override.aes = list(size = 5, alpha = 1))) 
+plot_metaclusters(df = Bodenmiller_expinfo_dr_metacluster_values, 
+                  metacluster = "meta8")
 ```
+
+
 ```{r cluster_savepng, eval = FALSE}
 # Do not run
 # To save the plot as a png image (in case the dataset contains too many points and cannot be saved as a PDF)
