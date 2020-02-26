@@ -21,6 +21,8 @@ plotDAheatmap <- function(x, y, top_n = 20, comparison,
                             all = FALSE, th = 0.05, normalize = TRUE,
                             order = TRUE, show_sample_ID = TRUE){
 
+  #TODO check comparison parameter.
+  
   # Check if the input is an SCE object and contains cluster's information
   CATALYST:::.check_sce(x)
   # Extract expression values of the SCE
