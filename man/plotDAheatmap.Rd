@@ -2,7 +2,8 @@
 % Please edit documentation in R/CATALYST_heatmap_plots.R
 \name{plotDAheatmap}
 \alias{plotDAheatmap}
-\title{Plot the heatmap of the DA test.}
+\title{Plot the DA test heatmap.
+Plot the heatmap of the DA test.}
 \usage{
 plotDAheatmap(
   x,
@@ -40,5 +41,6 @@ Relative population abundance are arcsine-square-root scaled prior to normalizat
 HeatmapList-class object.
 }
 \description{
+Plot the DA test heatmap.
 Plot the heatmap of the DA test.
 }
