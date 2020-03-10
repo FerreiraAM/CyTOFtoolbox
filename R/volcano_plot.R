@@ -126,9 +126,10 @@ volcano_plot <- function(data, exp_conditions){
     ylab("-log10(adjusted p-value)") +
     xlab(paste("log2 fold change \n ", exp_conditions)) +
     xlim((0-lim), (0+lim)) +
-    geom_vline(xintercept = 1, col = "red", linetype = "dotted", size = 1) + #fold-change less than 2 as log2(2) = 1
-    geom_vline(xintercept = -1, col = "red", linetype = "dotted", size = 1) +
-    geom_hline(yintercept = -log10(0.05), col = "red", linetype = "dotted", size = 1) +
+    geom_vline(xintercept = 1, col = "gray41", linetype = "dotted", size = 1) + #fold-change less than 2 as log2(2) = 1
+    geom_vline(xintercept = -1, col = "gray41", linetype = "dotted", size = 1) +
+    geom_hline(yintercept = -log10(0.05), col = "gray41", linetype = "dotted", size = 1) +
+    geom_vline(xintercept = 0, col = "red", size = 0.5) +
     geom_text_repel(aes_string(x = "log2foldchange", y = "log10_adjpval", label = "protein_name", colour = "adjpval_thres"), show.legend = FALSE) +
     scale_color_grey(start = 0.8, end = 0.2, name = "Adjusted p-value < 0.05") +
     scale_size_continuous(name = "MSI", breaks = c(0, 1:2 %o% 10^(0:bound)))
