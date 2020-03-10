@@ -119,6 +119,9 @@ function can be used.
 
 ## Clusters
 
+The `plot_metacluster` function allows the visualization of the metaclusters in
+the dimensional reduction space (as UMAP). It is a `ggplot2` object.
+
 ```{r plot_cluster, eval = TRUE}
 # Extract SCE information before plotting
 Bodenmiller_expinfo_dr_metacluster_values <- extract_SCE_info(sce = sce_Bodenmiller,
@@ -150,17 +153,14 @@ dev.off()
 
 ## DA test heatmap
 
+The `plotDiffHeatmap` function is modified to get colors more different for the samples
+and conditions, as well as the heat color scale goes from grey to red. Additionally,
+there is the possibility to hide the sample IDs with the `show_sample_ID` parameter.
+
 ```{r DA_test_heatmap}
 # Heatmap of the DA test results
 ## median (arcsinh-transformed) cell-type marker expressions (across all samples)
 ## relative cluster abundances by samples
-plotDiffHeatmap(sce_Bodenmiller, 
-                res_DA_Bodenmiller,
-                th = 0.05,
-                normalize = TRUE, 
-                hm1 = FALSE, 
-                row_anno = TRUE)
-# Modified heatmap of the DA test results
 plotDAheatmap(x = sce_Bodenmiller,
               y = res_DA_Bodenmiller, 
               comparison = "condition",
