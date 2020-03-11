@@ -1,80 +1,6 @@
 # Goal create a volcano plot as a complementary plot for the output of the cytoGLMM package
 # The cytoGLMM model(s) need to be run beforehand
-# Packages: tydiverse, ggplot2,
-
-#' Add 0.05 to the cyTOF values
-#' (in prevention of the log transformation that will be apply)
-#'
-#' @param x Numeric, vector.
-#' @return Numeric, vector.
-function_add_05 <- function(x){
-  x + 0.5
-}
-
-#' Compute Mean Signal Intensity (MSI) per marker
-#'
-#' @param data Tibble, CyTOF data.
-#' @param protein_names Vector, vector of markers.
-#' @return Tibble.
-function_compute_MSI <- function(data, protein_names){
-  # Compute the mean for each marker
-  MSI_data <- data %>%
-    dplyr::select(protein_names) %>%
-    dplyr::summarise_all("mean")
-  # Return
-  tidyr::gather(MSI_data, "protein_name", "MSI")
-}
-
-#' Compute log2 fold change for each marker between 2 conditions
-#'
-#' @param data Tibble, CyTOF data.
-#' @param condition Character, column's name where the condition are stored.
-#' @param protein_names Vector, vector of markers.
-#' @return Tibble.
-function_compute_log2foldchange <- function(data, condition, protein_names){
-  # Compute mean per condition
-  mean_per_condition <- data %>%
-    dplyr::select(c(condition, protein_names)) %>%
-    group_by(.dots=condition) %>%
-    dplyr::summarise_all("mean")
-  # log2 fold change
-  mean_log2foldchange <- log2(mean_per_condition[1, protein_names]) - log2(mean_per_condition[2, protein_names])
-  # Return
-  tidyr::gather(mean_log2foldchange, "protein_name", "log2foldchange")
-}
-
-#' Prepare the output from the CytoGLMM model
-#'
-#' @param data Cytoglmm object, results from the CytoGLMM model.
-#' @param alpha Numeric, threshold of p-value significance (by default alpha = 0.05)
-#' @return Tibble, formated CytoGLMM model results.
-function_prepare_output_CytoGLMMmodel <- function(data, alpha){
-  # Extract the summary
-  sum_data <- summary(data)
-  # Add a threshold column on the adjusted p-values
-  sum_data <- dplyr::mutate(sum_data, adjpval_thres = ifelse(.data$pvalues_adj < 0.05, "significant", "non-significant"))
-  # Transform the adjusted p-values with log10
-  sum_data <- sum_data %>%
-    dplyr::mutate(log10_adjpval = -log10(.data$pvalues_adj))
-  # Return
-  return(sum_data)
-}
-
-
-#' Combine data from CytoGLMM, the log2 fold change and the MSI
-#'
-#' @param summary_CytoGLMM_fit Tibble, formated results from the CytoGLMM model.
-#' @param data_log2foldchange Tibble, log2 fold change per marker between 2 conditions.
-#' @param data_MSI Tibble, Mean Signal Intensity (MSI) per marker.
-#' @return Tibble.
-function_combine_datas <- function(summary_CytoGLMM_fit, data_log2foldchange, data_MSI){
-  # Combine log2foldchange with CytoGLMM p-values
-  data_log2foldchange_CytoGLMMpvalues <- suppressMessages(left_join(summary_CytoGLMM_fit, data_log2foldchange))
-  # Add MSI
-  data_log2foldchange_CytoGLMMpvalues_MSI <- suppressMessages(left_join(data_log2foldchange_CytoGLMMpvalues, data_MSI))
-  # Return
-  return(data_log2foldchange_CytoGLMMpvalues_MSI)
-}
+# Packages: tydiverse, ggplot2.
 
 #' Prepare data for the volcano plot
 #'
@@ -133,4 +59,80 @@ volcano_plot <- function(data, exp_conditions){
     geom_text_repel(aes_string(x = "log2foldchange", y = "log10_adjpval", label = "protein_name", colour = "adjpval_thres"), show.legend = FALSE) +
     scale_color_grey(start = 0.8, end = 0.2, name = "Adjusted p-value < 0.05") +
     scale_size_continuous(name = "MSI", breaks = c(0, 1:2 %o% 10^(0:bound)))
+}
+
+# HELPER FUNCTIONS =================================================================================
+
+# Add 0.05 to the cyTOF values
+# (in prevention of the log transformation that will be apply)
+#
+# @param x Numeric, vector.
+# @return Numeric, vector.
+function_add_05 <- function(x){
+  x + 0.5
+}
+
+# Compute Mean Signal Intensity (MSI) per marker
+#
+# @param data Tibble, CyTOF data.
+# @param protein_names Vector, vector of markers.
+# @return Tibble.
+function_compute_MSI <- function(data, protein_names){
+  # Compute the mean for each marker
+  MSI_data <- data %>%
+    dplyr::select(protein_names) %>%
+    dplyr::summarise_all("mean")
+  # Return
+  tidyr::gather(MSI_data, "protein_name", "MSI")
+}
+
+# Compute log2 fold change for each marker between 2 conditions
+#
+# @param data Tibble, CyTOF data.
+# @param condition Character, columns name where the condition are stored.
+# @param protein_names Vector, vector of markers.
+# @return Tibble.
+function_compute_log2foldchange <- function(data, condition, protein_names){
+  # Compute mean per condition
+  mean_per_condition <- data %>%
+    dplyr::select(c(condition, protein_names)) %>%
+    group_by(.dots=condition) %>%
+    dplyr::summarise_all("mean")
+  # log2 fold change
+  mean_log2foldchange <- log2(mean_per_condition[1, protein_names]) - log2(mean_per_condition[2, protein_names])
+  # Return
+  tidyr::gather(mean_log2foldchange, "protein_name", "log2foldchange")
+}
+
+# Prepare the output from the CytoGLMM model
+#
+# @param data Cytoglmm object, results from the CytoGLMM model.
+# @param alpha Numeric, threshold of p-value significance (by default alpha = 0.05)
+# @return Tibble, formated CytoGLMM model results.
+function_prepare_output_CytoGLMMmodel <- function(data, alpha){
+  # Extract the summary
+  sum_data <- summary(data)
+  # Add a threshold column on the adjusted p-values
+  sum_data <- dplyr::mutate(sum_data, adjpval_thres = ifelse(.data$pvalues_adj < 0.05, "significant", "non-significant"))
+  # Transform the adjusted p-values with log10
+  sum_data <- sum_data %>%
+    dplyr::mutate(log10_adjpval = -log10(.data$pvalues_adj))
+  # Return
+  return(sum_data)
+}
+
+
+# Combine data from CytoGLMM, the log2 fold change and the MSI
+#
+# @param summary_CytoGLMM_fit Tibble, formated results from the CytoGLMM model.
+# @param data_log2foldchange Tibble, log2 fold change per marker between 2 conditions.
+# @param data_MSI Tibble, Mean Signal Intensity (MSI) per marker.
+# @return Tibble.
+function_combine_datas <- function(summary_CytoGLMM_fit, data_log2foldchange, data_MSI){
+  # Combine log2foldchange with CytoGLMM p-values
+  data_log2foldchange_CytoGLMMpvalues <- suppressMessages(left_join(summary_CytoGLMM_fit, data_log2foldchange))
+  # Add MSI
+  data_log2foldchange_CytoGLMMpvalues_MSI <- suppressMessages(left_join(data_log2foldchange_CytoGLMMpvalues, data_MSI))
+  # Return
+  return(data_log2foldchange_CytoGLMMpvalues_MSI)
 }
