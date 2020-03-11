@@ -2,6 +2,7 @@
 
 export(extract_SCE_info)
 export(plotDAheatmap)
+export(plot_MDS_withthreshold)
 export(plot_metaclusters)
 export(prepare_data_for_volcanoplot)
 export(volcano_plot)
