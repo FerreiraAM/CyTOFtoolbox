@@ -13,12 +13,12 @@
 #' plot (by default cor_threshold = 0.5).
 #' 
 #' @export
-function (df_samples, 
-          protein_names, 
-          sample_info_names, 
-          color, 
-          sample_label = "",
-          cor_threshold = 0.5) {
+plot_MDS_withthreshold <- function (df_samples, 
+                                    protein_names, 
+                                    sample_info_names, 
+                                    color, 
+                                    sample_label = "",
+                                    cor_threshold = 0.5) {
   # Compute the median of each marker
   expr_median = df_samples %>% 
     group_by(.dots = sample_info_names) %>% 
