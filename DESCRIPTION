@@ -15,6 +15,7 @@ Imports:
   CATALYST,
   CytoGLMM,
   ComplexHeatmap,
+  cowplot,
   diffcyt,
   dplyr,
   ggplot2,
