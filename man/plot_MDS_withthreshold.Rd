@@ -22,7 +22,7 @@ plot_MDS_withthreshold(
 
 \item{color}{Character, indicates how to color the MDS dots.}
 
-\item{sample_label}{Character, legend label.}
+\item{sample_label}{Character, dot labels for MDS plot.}
 
 \item{cor_threshold}{Numeric, threshold on which marker to display in the circle
 plot (by default cor_threshold = 0.5).}
