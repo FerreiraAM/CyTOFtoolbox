@@ -46,7 +46,7 @@ plot_MDS_withthreshold <- function (df_samples,
   expr_cor <- tibble::add_column(expr_cor, "y0" = rep(0, nrow(expr_cor)))
   # Do not display protein which are < cor_threshold of both MSD1/2
   expr_cor_filtered <- dplyr::filter(expr_cor, 
-                                     abs(MDS1) > cor_threshold & abs(MDS2) > cor_threshold)
+                                     abs(.data$MDS1) > cor_threshold & abs(.data$MDS2) > cor_threshold)
   # Draw the circle
   corcir <- circle(c(0, 0), npoints = 100)
   # Circle plot
