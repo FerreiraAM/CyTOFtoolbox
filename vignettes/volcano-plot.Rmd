@@ -68,14 +68,28 @@ protein_names <- colData(se_aghaeepour2017immune) %>%
   .$protein_name
 
 # Subset to NK cell population
-df_samples_subset <- df_samples %>% dplyr::filter(celltype == "NK")
-df_samples_subset %<>% dplyr::select(protein_names, sample_info_names)
+df_samples_NKcells <- df_samples %>% dplyr::filter(celltype == "NK")
+df_samples_NKcells %<>% dplyr::select(protein_names, sample_info_names)
 
 # Transform the data
-df_samples_subset_transformed <- df_samples_subset %>% 
+df_samples_NKcells_transformed <- df_samples_NKcells %>% 
   dplyr::mutate_at(protein_names, 
                    function(x) asinh(x/5))
 ```
+
+## MDS plot
+
+The MDS plot provided by the `CytoGLMM` has been modified to add a threshold 
+on how much the markers medians correlate with the MDS dimensions.
+
+```{r mds_plot}
+plot_MDS_withthreshold(df_samples = df_samples_NKcells,
+                       protein_names = protein_names, 
+                       sample_info_names = sample_info_names, 
+                       color = "term",
+                       cor_threshold = 0.2)
+```
+
 
 ## Fit the GLMM model
 
@@ -84,7 +98,7 @@ Fit a Generalized Linear Mixed Model (GLMM) with donor random effects.
 ```{r fit_cytoglmm, eval = FALSE}
 # Does not run 
 CytoGLMM_glmm_fit_aghaeepour2017immune <- 
-  CytoGLMM::cytoglmm(df_samples_subset_transformed, 
+  CytoGLMM::cytoglmm(df_samples_NKcells_transformed, 
                      protein_names = protein_names,
                      condition = "term", 
                      group = "donor",
@@ -108,7 +122,7 @@ As input parameters, we need:
 
 ```{r volcano_plot}
 # Prepare the data
-data_for_volplot <- prepare_data_for_volcanoplot(data = df_samples_subset, 
+data_for_volplot <- prepare_data_for_volcanoplot(data = df_samples_NKcells, 
                                                  protein_name = protein_names,
                                                  condition = "term", 
                                                  CytoGLMM_fit = CytoGLMM_glmm_fit_aghaeepour2017immune)
