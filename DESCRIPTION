@@ -2,7 +2,7 @@ Package: CyTOFtoolbox
 Type: Package
 Title: Tools box for the analysis of CyTOF data
 Version: 0.1.0
-Authors@R: person("Anne-Muad", "Ferreira", email = "anne-maud.ferreirat@stanford.edu",
+Authors@R: person("Anne-Maud", "Ferreira", email = "anne-maud.ferreirat@stanford.edu",
                   role = c("aut", "cre"))
 Description: This package regroups many tools for the analysis of CyTOF data.
   It is use in the laboratory of Prof. Catherine Blish. 
