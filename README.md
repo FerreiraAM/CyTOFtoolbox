@@ -23,12 +23,13 @@ devtools::install_github("ChristofSeiler/CytoGLMM")
 
 In this package, multiple functions have been created to complement the existing workflow:
 
-### Vocano plot
+### CytoGLMM extension
 
 - Volcano plot as a complementary plot to the cytoglmm analysis.
+- MDS plot with a threshold on the correlation marker/MDS axes.
 - To access the vignette: 
 ```
-vignette("volcano-plot", package = "CyTOFtoolbox")
+vignette("CytoGLMM-extension", package = "CyTOFtoolbox")
 ```
 
 ### Clustering
