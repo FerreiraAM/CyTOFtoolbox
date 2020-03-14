@@ -1,10 +1,10 @@
 ---
-title: "Volcano plot"
+title: "CytoGLMM extension"
 author: "Anne-Maud Ferreira"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{volcano-plot}
+  %\VignetteIndexEntry{CytoGLMM-extension}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -28,7 +28,8 @@ library(tidyverse)
 
 # Introduction
 
-This is a short vignette showing an example of the volcano plot.
+This is a short vignette showing an example of the volcano plot and modified
+MDS plot.
 
 # Aghaeepour et al. (2017) dataset
 
