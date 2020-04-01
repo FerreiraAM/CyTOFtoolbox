@@ -140,7 +140,7 @@ design_matrix_Bodenmiller <- createDesignMatrix(ei(sce_Bodenmiller),
 contrast_Bodenmiller <- createContrast(c(0, 1))
 # Test with edgeR
 ## Default method recommended by the package
-res_DA_Bodenmiller <- diffcyt(sce_Bodenmiller, 
+res_DA_Bodenmiller_edgeR <- diffcyt(sce_Bodenmiller, 
                               clustering_to_use = "meta8",
                               analysis_type = "DA", 
                               method_DA = "diffcyt-DA-edgeR",
@@ -152,10 +152,11 @@ There is a non-parametric test available with `voom`. The `voom` method transfor
 the raw cluster cell counts and estimate observation-level precision weights in order 
 to stabilize the mean–variance relationship. Then, one Linear Model is fitted for each cluster.
 
-```{r DA_tests_voom}
+```{r DA_tests_voom, results = "hide"}
 # Design & constrast matrix are the same as for the diffcyt-DA-edgeR test
-## design_matrix_Bodenmiller
-## contrast_Bodenmiller
+## design_matrix_Bodenmiller <- createDesignMatrix(ei(sce_Bodenmiller), 
+##                                                cols_design = "condition")
+## contrast_Bodenmiller <- createContrast(c(0, 1))
 # Test with voom
 ## Non-parametric test
 res_DA_Bodenmiller_voom <- diffcyt(sce_Bodenmiller, 
@@ -163,7 +164,8 @@ res_DA_Bodenmiller_voom <- diffcyt(sce_Bodenmiller,
                               analysis_type = "DA", 
                               method_DA = "diffcyt-DA-voom",
                               design = design_matrix_Bodenmiller, 
-                              contrast = contrast_Bodenmiller)
+                              contrast = contrast_Bodenmiller, 
+                              plot = FALSE)
 ```
 
 Additional notes for the analysis:
@@ -175,10 +177,20 @@ function can be used.
 
 ### Visualization - DA test heatmap
 
-The `plotDiffHeatmap` function is modified to get colors more different for the samples
-and conditions, as well as the heat color scale goes from grey to red. Additionally,
-there is the possibility to hide the sample IDs with the `show_sample_ID` parameter
-(by default `show_sample_ID = TRUE`).
+The `plotDiffHeatmap` function plots the results of the DA tests.
+The heatmap represents the proportion of each metacluster in each sample. These 
+proportions are first scaled with arcsine-square-root transformation and then z-score 
+normalized in each cluster. The cluster ID is labeled along the left side of the heatmap, 
+ordered by significance, which is shown along the right side of the heatmap. 
+The differential abundance test reports adjusted p-values (FDR).
+
+
+The `plotDAheatmap` modified this function to get colors more different for the samples
+and conditions. The heat color scale goes from grey to red, with grey showing under-representation
+and red showing over-representation. 
+
+Additionally, there is the possibility to hide the sample IDs with 
+the `show_sample_ID` parameter (by default `show_sample_ID = TRUE`).
 
 - `diffcyt-DA-edgeR`:
 
@@ -210,6 +222,28 @@ plotDAheatmap(x = sce_Bodenmiller,
               all = TRUE)
 ```
 
+Note: The colors of the top of the heatmap are randomly selected. However the 
+function `colors_DAheatmap` allows to generate colors which can be given as
+an input parameter in the `plotDAheatmap` function.
 
+```{r colors_DAheatmap_example, message=FALSE, warning=FALSE}
+# Define the colors which will be used for the heatmaps
+# Keeps only the columns which will be displayed on the top part of the heatmap
+df_levels <- as.data.frame(colData(sce_Bodenmiller)) %>% 
+   dplyr::select(-cluster_id, -sample_id) %>% 
+   unique()
+# Order the values based on the comparison we want to test
+df_levels <- data.frame(df_levels[order(df_levels[,"condition"]),], row.names = NULL)
+# Generate the colors
+colors_Bodenmiller <- colors_DAheatmap(exp_info = df_levels, "condition")
+colors_Bodenmiller
+
+# Use these colors in the heatmap
+plotDAheatmap(x = sce_Bodenmiller,
+              y = res_DA_Bodenmiller_voom, 
+              comparison = "condition",
+              all = TRUE,
+              predefined_colors = colors_Bodenmiller) # Add colors as a input parameter
+```
 
  
