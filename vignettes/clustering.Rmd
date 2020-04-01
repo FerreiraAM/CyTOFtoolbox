@@ -52,6 +52,8 @@ data(PBMC_fs, PBMC_panel, PBMC_md)
 sce_Bodenmiller <- prepData(PBMC_fs, PBMC_panel, PBMC_md)
 ```
 
+# Analysis 
+
 ## Clustering analysis 
 
 To perform the clustering, we need to specify the type markers on which the clustering
@@ -90,6 +92,38 @@ colnames(dr_umap_Bodenmiller) <- c("X1", "X2")
 reducedDims(sce_Bodenmiller) <- list("UMAP" = dr_umap_Bodenmiller)
 ```
 
+### Visualization of the clusters on the UMAP space
+
+The `plot_metacluster` function allows the visualization of the metaclusters in
+the dimensional reduction space (as UMAP). It is a `ggplot2` object.
+
+```{r plot_cluster, eval = TRUE}
+# Extract SCE information before plotting
+Bodenmiller_expinfo_dr_metacluster_values <- extract_SCE_info(sce = sce_Bodenmiller,
+                                                              metacluster = "meta8")
+
+# Plot
+plot_metaclusters(df = Bodenmiller_expinfo_dr_metacluster_values, 
+                  metacluster = "meta8")
+```
+
+```{r cluster_savepng, eval = FALSE}
+# Do not run
+# To save the plot as a png image (in case the dataset contains too many points and cannot be saved as a PDF)
+png(file = "PNG_clusters_meta8_Bodenmiller.png", width = 4000, height = 3800, unit = "px")
+ggplot(Bodenmiller_expinfo_dr_metacluster_values, aes_string(x = names_dr[1], y = names_dr[2])) +
+  geom_point(aes(col = meta8), size = 2, alpha = 0.1, pch = 16) +
+  scale_color_manual(values = catalyst_col, name = "8 meta-clusters") +
+  labs(x = paste(dr, "1"), y = paste(dr, "2")) + 
+  theme_bw() + 
+  guides(colour = guide_legend(override.aes = list(size = 30, alpha = 1))) +
+  theme(axis.text = element_text(size = 70), axis.title = element_text(size = 80), 
+        legend.title = element_text(size = 80), legend.text = element_text(size = 70),
+        axis.ticks.length= unit(0.8, "cm"), axis.ticks = element_line(size = 2),
+        panel.border = element_rect(size = 2), panel.grid.major = element_blank()) 
+dev.off()
+```
+
 ## Differential Abundance (DA) tests
 
 This test from the `diffcyt` package test for differential abundance of cell populations, i.e. clusters.
@@ -115,49 +149,14 @@ to filter for the comparison, the `filterSCE()` (from the `CATALYST` package)
 function can be used.
 - Factors in the metadata crashed the analysis
 
-# Visualization
-
-## Clusters
-
-The `plot_metacluster` function allows the visualization of the metaclusters in
-the dimensional reduction space (as UMAP). It is a `ggplot2` object.
-
-```{r plot_cluster, eval = TRUE}
-# Extract SCE information before plotting
-Bodenmiller_expinfo_dr_metacluster_values <- extract_SCE_info(sce = sce_Bodenmiller,
-                                                              metacluster = "meta8")
-
-# Plot
-plot_metaclusters(df = Bodenmiller_expinfo_dr_metacluster_values, 
-                  metacluster = "meta8")
-```
-
-
-```{r cluster_savepng, eval = FALSE}
-# Do not run
-# To save the plot as a png image (in case the dataset contains too many points and cannot be saved as a PDF)
-png(file = "PNG_clusters_meta8_Bodenmiller.png", width = 4000, height = 3800, unit = "px")
-ggplot(Bodenmiller_expinfo_dr_metacluster_values, aes_string(x = names_dr[1], y = names_dr[2])) +
-  geom_point(aes(col = meta8), size = 2, alpha = 0.1, pch = 16) +
-  scale_color_manual(values = catalyst_col, name = "8 meta-clusters") +
-  labs(x = paste(dr, "1"), y = paste(dr, "2")) + 
-  theme_bw() + 
-  guides(colour = guide_legend(override.aes = list(size = 30, alpha = 1))) +
-  theme(axis.text = element_text(size = 70), axis.title = element_text(size = 80), 
-        legend.title = element_text(size = 80), legend.text = element_text(size = 70),
-        axis.ticks.length= unit(0.8, "cm"), axis.ticks = element_line(size = 2),
-        panel.border = element_rect(size = 2), panel.grid.major = element_blank()) 
-dev.off()
-```
-
-
-## DA test heatmap
+### Visualization - DA test heatmap
 
 The `plotDiffHeatmap` function is modified to get colors more different for the samples
 and conditions, as well as the heat color scale goes from grey to red. Additionally,
-there is the possibility to hide the sample IDs with the `show_sample_ID` parameter.
+there is the possibility to hide the sample IDs with the `show_sample_ID` parameter
+(by default `show_sample_ID = TRUE`).
 
-```{r DA_test_heatmap}
+```{r DA_test_heatmap, message=FALSE, warning=FALSE}
 # Heatmap of the DA test results
 ## median (arcsinh-transformed) cell-type marker expressions (across all samples)
 ## relative cluster abundances by samples
@@ -166,4 +165,9 @@ plotDAheatmap(x = sce_Bodenmiller,
               comparison = "condition",
               all = TRUE)
 ```
+
+
+
+
+
  
