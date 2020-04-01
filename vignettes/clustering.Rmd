@@ -126,18 +126,42 @@ dev.off()
 
 ## Differential Abundance (DA) tests
 
-This test from the `diffcyt` package test for differential abundance of cell populations, i.e. clusters.
+These tests from the `diffcyt` package perform differential abundance tests
+within each cell population, i.e. clusters.
 
-```{r DA_tests}
+The default method recommended by the package use `edgeR`, which fits a negative 
+binomial generalized log linear model for each cluster and then performs likelihood 
+ratio tests:
+
+```{r DA_tests_edgeR}
 # Create design & constrast matrix
 design_matrix_Bodenmiller <- createDesignMatrix(ei(sce_Bodenmiller), 
                                                 cols_design = "condition")
 contrast_Bodenmiller <- createContrast(c(0, 1))
-# Test
+# Test with edgeR
+## Default method recommended by the package
 res_DA_Bodenmiller <- diffcyt(sce_Bodenmiller, 
                               clustering_to_use = "meta8",
                               analysis_type = "DA", 
                               method_DA = "diffcyt-DA-edgeR",
+                              design = design_matrix_Bodenmiller, 
+                              contrast = contrast_Bodenmiller)
+```
+
+There is a non-parametric test available with `voom`. The `voom` method transforms 
+the raw cluster cell counts and estimate observation-level precision weights in order 
+to stabilize the mean–variance relationship. Then, one Linear Model is fitted for each cluster.
+
+```{r DA_tests_voom}
+# Design & constrast matrix are the same as for the diffcyt-DA-edgeR test
+## design_matrix_Bodenmiller
+## contrast_Bodenmiller
+# Test with voom
+## Non-parametric test
+res_DA_Bodenmiller_voom <- diffcyt(sce_Bodenmiller, 
+                              clustering_to_use = "meta8",
+                              analysis_type = "DA", 
+                              method_DA = "diffcyt-DA-voom",
                               design = design_matrix_Bodenmiller, 
                               contrast = contrast_Bodenmiller)
 ```
@@ -156,17 +180,35 @@ and conditions, as well as the heat color scale goes from grey to red. Additiona
 there is the possibility to hide the sample IDs with the `show_sample_ID` parameter
 (by default `show_sample_ID = TRUE`).
 
-```{r DA_test_heatmap, message=FALSE, warning=FALSE}
+- `diffcyt-DA-edgeR`:
+
+```{r DA_test_heatmap_edgeR, message=FALSE, warning=FALSE}
 # Heatmap of the DA test results
 ## median (arcsinh-transformed) cell-type marker expressions (across all samples)
 ## relative cluster abundances by samples
 plotDAheatmap(x = sce_Bodenmiller,
-              y = res_DA_Bodenmiller, 
+              y = res_DA_Bodenmiller_edgeR, 
               comparison = "condition",
               all = TRUE)
 ```
 
+- `diffcyt-DA-voom`:
 
+```{r DA_test_heatmap_voom, message=FALSE, warning=FALSE}
+# Heatmap of the DA test results
+## median (arcsinh-transformed) cell-type marker expressions (across all samples)
+## relative cluster abundances by samples
+
+# There is a typo in the CATALYST package on the colnames of the results
+# The 2 following lines fix it for now
+col_idx <- grep("logFC", names(rowData(res_DA_Bodenmiller_voom$res)))
+names(rowData(res_DA_Bodenmiller_voom$res))[col_idx] <- "log_FC"
+# Plot
+plotDAheatmap(x = sce_Bodenmiller,
+              y = res_DA_Bodenmiller_voom, 
+              comparison = "condition",
+              all = TRUE)
+```
 
 
 
