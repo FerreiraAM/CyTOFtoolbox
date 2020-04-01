@@ -14,7 +14,7 @@ devtools::install_github("FerreiraAM-stanford/CyTOFtoolbox",
   build_vignettes = TRUE)
 ```
 
-Note: The installation of the CytoGLMM package is needed.
+Note: The installation of the CytoGLMM package is mandatory.
 ```
 devtools::install_github("ChristofSeiler/CytoGLMM")
 ```
