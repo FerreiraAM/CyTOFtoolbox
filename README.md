@@ -32,7 +32,7 @@ In this package, multiple functions have been created to complement the existing
 vignette("CytoGLMM-extension", package = "CyTOFtoolbox")
 ```
 
-### Clustering
+### Clustering with CATALYST
 
 - Modified heatmap plot of the differential abundance (DA) test results from 
 `CATALYST` package.
