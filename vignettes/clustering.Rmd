@@ -1,6 +1,10 @@
 ---
 title: "Clustering"
-output: rmarkdown::html_vignette
+author: "Anne-Maud Ferreira"
+date: "`r Sys.Date()`"
+output: 
+  rmarkdown::html_vignette: 
+    toc: true
 vignette: >
   %\VignetteIndexEntry{clustering}
   %\VignetteEngine{knitr::rmarkdown}
@@ -23,6 +27,7 @@ library(diffcyt)
 library(uwot)
 library(SingleCellExperiment)
 library(ggplot2)
+library(dplyr)
 ```
 
 # Introduction
@@ -35,7 +40,7 @@ algorithms: `FlowSOM` clustering and `ConsensusClusterPlus` meta clustering.
 The vignette proposes functions to modify the results visualizations:
 
 - UMAP;
-- Heatmaps.
+- Differential Abudance (DA) heatmaps.
 
 # Data preprocessing
 
@@ -107,9 +112,10 @@ plot_metaclusters(df = Bodenmiller_expinfo_dr_metacluster_values,
                   metacluster = "meta8")
 ```
 
+To save the plot as a png image (in case the dataset contains too many points and cannot be saved as a PDF), the following code can be used and adpated:
+
 ```{r cluster_savepng, eval = FALSE}
 # Do not run
-# To save the plot as a png image (in case the dataset contains too many points and cannot be saved as a PDF)
 png(file = "PNG_clusters_meta8_Bodenmiller.png", width = 4000, height = 3800, unit = "px")
 ggplot(Bodenmiller_expinfo_dr_metacluster_values, aes_string(x = names_dr[1], y = names_dr[2])) +
   geom_point(aes(col = meta8), size = 2, alpha = 0.1, pch = 16) +
@@ -152,7 +158,7 @@ There is a non-parametric test available with `voom`. The `voom` method transfor
 the raw cluster cell counts and estimate observation-level precision weights in order 
 to stabilize the mean–variance relationship. Then, one Linear Model is fitted for each cluster.
 
-```{r DA_tests_voom, results = "hide"}
+```{r DA_tests_voom, results = 'hide', fig.show = 'hide'}
 # Design & constrast matrix are the same as for the diffcyt-DA-edgeR test
 ## design_matrix_Bodenmiller <- createDesignMatrix(ei(sce_Bodenmiller), 
 ##                                                cols_design = "condition")
@@ -243,7 +249,7 @@ plotDAheatmap(x = sce_Bodenmiller,
               y = res_DA_Bodenmiller_voom, 
               comparison = "condition",
               all = TRUE,
-              predefined_colors = colors_Bodenmiller) # Add colors as a input parameter
+              predefined_colors = colors_Bodenmiller) # Add colors as an input parameter
 ```
 
  
