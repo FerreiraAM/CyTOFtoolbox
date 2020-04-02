@@ -61,7 +61,7 @@ plot_MDS_withthreshold <- function (df_samples,
                  colour = "gray65") + 
     geom_text_repel(data = expr_cor_filtered, 
                     aes_string(x = "MDS1", y = "MDS2", label = "protein_selection")) + 
-    labs(x = "MDS1") + labs(y = "MDS2") + 
+    labs(x = "axis 1") + labs(y = "axis 2") + 
     coord_fixed() 
   # MDS plot
   mds_plot <- ggplot(expr_median, aes_string(x = "MDS1", y = "MDS2", color = color)) + 
