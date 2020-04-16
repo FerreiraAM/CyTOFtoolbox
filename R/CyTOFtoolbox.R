@@ -16,6 +16,8 @@
 #'
 #' @docType package
 #' @name CyTOFtoolbox
+#' 
+#' @importClassesFrom SummarizedExperiment SummarizedExperiment
 #'
 #' @import CytoGLMM
 #' @import ggplot2

@@ -8,9 +8,18 @@
 The CyTOFtoolbox package regroups functions to perfom:
 clustering, differential expression analysis.
 }
-\section{Volcano plot functions}{
+\section{CytoGLMM-extension}{
 
-The volcano plot functions prepare the data to plot an adapted volcano plot.
-It used the CytoGLMM output as well as the raw data.
+The volcano plot functions prepare the data to plot a volcano plot adapted for
+the CyTOF data. It uses the `CytoGLMM` output as well as the raw data.
+A modified MDS plot function is also available, based on the original one from
+the `CytoGLMM` package. It adds a threshold on the correlation marker/MDS axes.
+}
+
+\section{Clustering}{
+
+A modified heatmap plot of the differential abundance (DA) test results from 
+`CATALYST` package is available with the option of showing or not the sample
+IDs as well as predefining the colors if needed.
 }
 
