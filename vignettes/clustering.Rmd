@@ -216,12 +216,6 @@ plotDAheatmap(x = sce_Bodenmiller,
 # Heatmap of the DA test results
 ## median (arcsinh-transformed) cell-type marker expressions (across all samples)
 ## relative cluster abundances by samples
-
-# There is a typo in the CATALYST package on the colnames of the results
-# The 2 following lines fix it for now
-col_idx <- grep("logFC", names(rowData(res_DA_Bodenmiller_voom$res)))
-names(rowData(res_DA_Bodenmiller_voom$res))[col_idx] <- "log_FC"
-# Plot
 plotDAheatmap(x = sce_Bodenmiller,
               y = res_DA_Bodenmiller_voom, 
               comparison = "condition",
