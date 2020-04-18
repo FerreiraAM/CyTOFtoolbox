@@ -24,7 +24,11 @@ knitr::opts_chunk$set(
 library(CyTOFtoolbox)
 library(flowCore)
 library(CATALYST)
+library(diffcyt)
+library(uwot)
 library(SingleCellExperiment)
+library(ggplot2)
+library(dplyr)
 ```
 
 # Metadata
@@ -74,7 +78,7 @@ flowSet_aghaeepour_sub_data_filename <- keyword(flowSet_aghaeepour_sub_data, "FI
 if (all(flowSet_aghaeepour_sub_data_filename == paste0(path_data, "/", samples_info$filename))) {
   keyword(flowSet_aghaeepour_sub_data) <- list("FILENAME" = samples_info$filename)
 } else {
-  error("File names of the flowset not corresponding to the file names of the metadata. Please check.")
+  warning("File names of the flowset not corresponding to the file names of the metadata. Please check.")
 }
 ```
 
