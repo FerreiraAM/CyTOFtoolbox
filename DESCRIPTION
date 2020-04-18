@@ -18,6 +18,7 @@ Imports:
   cowplot,
   diffcyt,
   dplyr,
+  flowCore,
   ggplot2,
   ggrepel,
   grid,
