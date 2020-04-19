@@ -31,9 +31,25 @@ library(ggplot2)
 library(dplyr)
 ```
 
-# Metadata
+# Data pre-processing
 
-## Markers information
+In this section, we are reading the FCS files as well as the metadata related
+to theses files.
+
+## Metadata
+
+The metadata are information related to the samples and the markers.
+
+### Markers information
+
+The marker information consists on: channel, antigen and class of the marker.
+The marker class is either *type*, *state* or *none*: 
+
+- *type* markers are gating/phenotype markers. They are commonly uses to perfors 
+Differential Abundance (DA) tests;
+- *state* markers are functional markers. They are commonly uses to perfors 
+Differential State (DS) tests;
+- *none* markers won't be uses for testing, e.g. event length.
 
 ```{r read_markers_info}
 # Path
@@ -47,7 +63,11 @@ colnames(markers_info)
 unique(markers_info$marker_class)
 ```
 
-## Samples information
+### Samples information
+
+The samples information describes at least the *file name*, *patient ID* 
+and *condition*. This file may contain any useful additional information for
+the analysis.
 
 ```{r read_samples_info}
 # Path
@@ -60,7 +80,10 @@ samples_info <- read.table(path_samples, as.is = "filename")
 colnames(samples_info)
 ```
 
-# Read FCS files
+## Read FCS files
+
+The FCS files are first read using the `read.flowSet` function from the `flowCore` 
+package which stores the files into a `flowSet` object.
 
 ```{r read_fcsfiles}
 # Path
@@ -70,7 +93,10 @@ flowSet_aghaeepour_sub_data <- read.flowSet(files = samples_info$filename,
                                     path = path_data)
 ```
 
-## Check file names
+### Check the file names
+
+The file names of the `flowSet` contains the path name. It has to be changed 
+to the file name only, corresponding to the sample metadata filename column.
 
 ```{r check_file_names}
 # File names
@@ -82,7 +108,10 @@ if (all(flowSet_aghaeepour_sub_data_filename == paste0(path_data, "/", samples_i
 }
 ```
 
-## Check markers list
+### Check markers list
+
+This step check if the markers list corresponds to all the markers present in
+the FCS files. If it is not the case, we add to the missing marker to this list.
 
 ```{r check_marker_list}
 if (!all(colnames(flowSet_aghaeepour_sub_data) %in%
@@ -103,12 +132,15 @@ df_missing_markers <- data.frame("fcs_colname" = missing_markers,
 markers_info_withmissingmarkers <- rbind(df_missing_markers, markers_info)
 ```
 
-# Prepare the data
+## Prepare the data
+
+The last step is to create a `SingleCellExperiment` containing the FCS file values,
+as well as the metadata.
 
 ```{r prepare_data}
 ## Prepare the data
 aghaeepour_sub_data <- CATALYST::prepData(flowSet_aghaeepour_sub_data,
-                                  panel = markers_info,
+                                  panel = markers_info_withmissingmarkers,
                                   md = samples_info,
                                   md_cols = list(file = "filename",
                                                  id = "filename",
@@ -144,7 +176,7 @@ metadata(aghaeepour_sub_data)$delta_area
 
 ## Dimensionality reduction with UMAP
 
-Dimension reduction is computed with UMAP.
+The dimension reduction is computed with UMAP.
 
 ```{r UMAP}
 # Extract data from sce object
@@ -172,7 +204,8 @@ plot_metaclusters(df = aghaeepour_expinfo_dr_metacluster_values,
                   metacluster = "meta6")
 ```
 
-To save the plot as a png image (in case the dataset contains too many points and cannot be saved as a PDF), the following code can be used and adpated:
+To save the plot as a png image (in case the dataset contains too many points 
+and cannot be saved as a PDF), the following code can be used and adpated:
 
 ```{r cluster_savepng, eval = FALSE}
 # Do not run
@@ -216,7 +249,8 @@ res_DA_aghaeepour_edgeR <- diffcyt(aghaeepour_sub_data,
 
 There is a non-parametric test available with `voom`. The `voom` method transforms 
 the raw cluster cell counts and estimate observation-level precision weights in order 
-to stabilize the mean–variance relationship. Then, one Linear Model is fitted for each cluster.
+to stabilize the mean–variance relationship. Then, one Linear Model is fitted 
+for each cluster.
 
 ```{r DA_tests_voom, results = 'hide', fig.show = 'hide'}
 # Design & constrast matrix are the same as for the diffcyt-DA-edgeR test
@@ -239,7 +273,7 @@ Additional notes for the analysis:
 - With this dataset, the comparison is straightforward. However in case you need 
 to filter for the comparison, the `filterSCE()` (from the `CATALYST` package)
 function can be used.
-- Factors in the metadata crashed the analysis
+- Factors in the metadata crashed the analysis.
 
 ### Visualization - DA test heatmap
 
@@ -252,8 +286,7 @@ The differential abundance test reports adjusted p-values (FDR).
 
 
 The `plotDAheatmap` modified this function to get colors more different for the samples
-and conditions. The heat color scale goes from grey to red, with grey showing under-representation
-and red showing over-representation. 
+and conditions. The heat color scale goes from grey to red, with grey showing under-representation and red showing over-representation. 
 
 Additionally, there is the possibility to hide the sample IDs with 
 the `show_sample_ID` parameter (by default `show_sample_ID = TRUE`).
