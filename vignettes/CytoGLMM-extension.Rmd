@@ -126,7 +126,7 @@ As input parameters, we need:
 ```{r volcano_plot}
 # Prepare the data
 data_for_volplot <- prepare_data_for_volcanoplot(data = df_samples_NKcells, 
-                                                 protein_name = protein_names,
+                                                 protein_names = protein_names,
                                                  condition = "term", 
                                                  CytoGLMM_fit = CytoGLMM_glmm_fit_aghaeepour2017immune)
 # Volcano plot
