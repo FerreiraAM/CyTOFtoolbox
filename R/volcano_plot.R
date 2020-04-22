@@ -5,13 +5,25 @@
 #' Prepare data for the volcano plot
 #'
 #' @param data Tibble, raw CyTOF data.
-#' @param protein_names Vector, vector of markers.
+#' @param protein_names Vector, vector of markers (by default = NULL, i.e. the 
+#' protein names are extracted from the CytoGLMM object).
 #' @param condition Character, column's name where the condition are stored.
 #' @param CytoGLMM_fit Cytoglmm object, results from the CytoGLMM model.
 #' @param alpha Numeric, threshold of p-value significance (by default alpha = 0.05)
 #' @return Tibble.
 #' @export
-prepare_data_for_volcanoplot <- function(data, protein_names, condition, CytoGLMM_fit, alpha = 0.05){
+prepare_data_for_volcanoplot <- function(data, protein_names = NULL, condition, CytoGLMM_fit, alpha = 0.05){
+  # If protein_names vector is not specify
+  if (is.null(protein_names)){
+    # Extract the information from the CytoGLMM fit object
+    protein_names <- CytoGLMM_fit$protein_names
+  } 
+  # Check if the given names are in the protein_names of the object
+  if (!all(protein_names %in% CytoGLMM_fit$protein_names)) {
+    protein_not_in <- protein_names[which(!(protein_names %in% CytoGLMM_fit$protein_names))]
+    stop(paste0(paste(protein_not_in, collapse = "; "), " not used in the CytoGLMM analysis.
+                Please check the protein_names vector parameter."))
+  }
   # Add 0.05 to the marker values (because many 1 in the data)
   data_05 <- dplyr::mutate_at(data, .vars = protein_names, .funs = function_add_05)
   # Compute log2 fold change
@@ -21,7 +33,9 @@ prepare_data_for_volcanoplot <- function(data, protein_names, condition, CytoGLM
   # Compute MSI
   data_MSI <- function_compute_MSI(data, protein_names = protein_names)
   # Prepare CytoGLMM data
-  formated_CytoGLMM_fit <- function_prepare_output_CytoGLMMmodel(data = CytoGLMM_fit, alpha = alpha)
+  formated_CytoGLMM_fit <- function_prepare_output_CytoGLMMmodel(data = CytoGLMM_fit, 
+                                                                 alpha = alpha,
+                                                                 protein_names = protein_names)
   # Combine data
   function_combine_datas(summary_CytoGLMM_fit = formated_CytoGLMM_fit,
                          data_log2foldchange = data_05_log2foldchange,
@@ -107,11 +121,12 @@ function_compute_log2foldchange <- function(data, condition, protein_names){
 # Prepare the output from the CytoGLMM model
 #
 # @param data Cytoglmm object, results from the CytoGLMM model.
-# @param alpha Numeric, threshold of p-value significance (by default alpha = 0.05)
+# @param alpha Numeric, threshold of p-value significance (by default alpha = 0.05).
+# @param protein_names Vector, vector of markers.
 # @return Tibble, formated CytoGLMM model results.
-function_prepare_output_CytoGLMMmodel <- function(data, alpha){
+function_prepare_output_CytoGLMMmodel <- function(data, alpha, protein_names){
   # Extract the summary
-  sum_data <- summary(data)
+  sum_data <- dplyr::filter(summary(data), .data$protein_name %in% protein_names)
   # Add a threshold column on the adjusted p-values
   sum_data <- dplyr::mutate(sum_data, adjpval_thres = ifelse(.data$pvalues_adj < 0.05, "significant", "non-significant"))
   # Transform the adjusted p-values with log10

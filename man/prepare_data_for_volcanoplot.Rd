@@ -6,7 +6,7 @@
 \usage{
 prepare_data_for_volcanoplot(
   data,
-  protein_names,
+  protein_names = NULL,
   condition,
   CytoGLMM_fit,
   alpha = 0.05
@@ -15,7 +15,8 @@ prepare_data_for_volcanoplot(
 \arguments{
 \item{data}{Tibble, raw CyTOF data.}
 
-\item{protein_names}{Vector, vector of markers.}
+\item{protein_names}{Vector, vector of markers (by default = NULL, i.e. the 
+protein names are extracted from the CytoGLMM object).}
 
 \item{condition}{Character, column's name where the condition are stored.}
 
