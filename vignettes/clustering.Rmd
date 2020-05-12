@@ -111,7 +111,7 @@ if (all(flowSet_aghaeepour_sub_data_filename == paste0(path_data, "/", samples_i
 ### Check markers list
 
 This step check if the markers list corresponds to all the markers present in
-the FCS files. If it is not the case, we add to the missing marker to this list.
+the FCS files. If it is not the case, we add the missing marker(s) to this list.
 
 ```{r check_marker_list}
 if (!all(colnames(flowSet_aghaeepour_sub_data) %in%
