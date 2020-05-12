@@ -1,7 +1,7 @@
 #' CyTOFtoolbox: A package regrouping tools to perform CyTOF data analysis.
 #'
 #' The CyTOFtoolbox package regroups functions to perfom:
-#' clustering, differential expression analysis.
+#' differential expression analysis and clustering.
 #'
 #' @section CytoGLMM-extension:
 #' The volcano plot functions prepare the data to plot a volcano plot adapted for

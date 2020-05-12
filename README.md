@@ -40,3 +40,10 @@ vignette("CytoGLMM-extension", package = "CyTOFtoolbox")
 ```
 vignette("clustering", package = "CyTOFtoolbox")
 ```
+
+## Notes
+
+Please be aware that some `CytoGLMM` workflows shared in the laboratory use the 
+`ceiling` function while reading the FCS files. To have an analysis that is 
+consistent between the two workflows (`CytoGLMM` and `CATALYST`), this function
+must be removed.
