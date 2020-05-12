@@ -115,9 +115,16 @@ The model was run outside of this vignette and store internally in the package, 
 data("CytoGLMM_glmm_fit_aghaeepour2017immune")
 ```
 
+Plot the output of the analysis:
+
+```{r plot_fit_cytoglmm}
+plot(CytoGLMM_glmm_fit_aghaeepour2017immune)
+```
+
+
 # Volcano plot
 
-Plot the volcano plot as a complementary plot for the CytoGLMM model output.
+Plot the volcano plot as a *complementary* plot of the CytoGLMM model output.
 As input parameters, we need:
 
 - The raw data (i.e. untransformed data to compute the global Mean Signal Intensity (MSI));
