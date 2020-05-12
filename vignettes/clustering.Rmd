@@ -42,14 +42,14 @@ The metadata are information related to the samples and the markers.
 
 ### Markers information
 
-The marker information consists on: channel, antigen and class of the marker.
+The marker information consists of: channel, antigen and class of the marker.
 The marker class is either *type*, *state* or *none*: 
 
-- *type* markers are gating/phenotype markers. They are commonly uses to perfors 
+- *type* markers are gating/phenotype markers. They are commonly used to perfors 
 Differential Abundance (DA) tests;
-- *state* markers are functional markers. They are commonly uses to perfors 
+- *state* markers are functional markers. They are commonly used to perfors 
 Differential State (DS) tests;
-- *none* markers won't be uses for testing, e.g. event length.
+- *none* markers won't be used for testing, e.g. event length.
 
 ```{r read_markers_info}
 # Path
@@ -208,12 +208,12 @@ To save the plot as a png image (in case the dataset contains too many points
 and cannot be saved as a PDF), the following code can be used and adpated:
 
 ```{r cluster_savepng, eval = FALSE}
-# Do not run
+# DOES NOT RUN 
 png(file = "PNG_clusters_meta6_aghaeepour.png", width = 4000, height = 3800, unit = "px")
-ggplot(aghaeepour_expinfo_dr_metacluster_values, aes_string(x = names_dr[1], y = names_dr[2])) +
+ggplot(aghaeepour_expinfo_dr_metacluster_values, aes_string(x = "X1", y = "X2")) +
   geom_point(aes(col = meta6), size = 2, alpha = 0.1, pch = 16) +
-  scale_color_manual(values = catalyst_col, name = "6 meta-clusters") +
-  labs(x = paste(dr, "1"), y = paste(dr, "2")) + 
+  scale_color_manual(values = your_colors, name = "6 meta-clusters") +
+  labs(x = "UMAP1", y = "UMAP2") + 
   theme_bw() + 
   guides(colour = guide_legend(override.aes = list(size = 30, alpha = 1))) +
   theme(axis.text = element_text(size = 70), axis.title = element_text(size = 80), 
@@ -273,7 +273,7 @@ Additional notes for the analysis:
 - With this dataset, the comparison is straightforward. However in case you need 
 to filter for the comparison, the `filterSCE()` (from the `CATALYST` package)
 function can be used.
-- Factors in the metadata crashed the analysis.
+- Factors in the metadata crash the analysis.
 
 ### Visualization - DA test heatmap
 
