@@ -118,7 +118,7 @@ data("CytoGLMM_glmm_fit_aghaeepour2017immune")
 Plot the output of the analysis:
 
 ```{r plot_fit_cytoglmm}
-plot(CytoGLMM_glmm_fit_aghaeepour2017immune)
+plot(CytoGLMM_glmm_fit_aghaeepour2017immune, order = TRUE)
 ```
 
 
