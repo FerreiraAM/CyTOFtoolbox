@@ -40,19 +40,18 @@ prepare_data_for_volcanoplot <- function(data, protein_names = NULL, condition, 
   function_combine_datas(summary_CytoGLMM_fit = formated_CytoGLMM_fit,
                          data_log2foldchange = data_05_log2foldchange,
                          data_MSI = data_MSI)
-}
+  }
 
 #' Volcano plot
 #'
 #' @param data Tibble, output of the \code{prepare_data_for_volcanoplot} function.
-#' @param exp_conditions Vector, conditions which are compared.
 #' @return ggplot2 object.
 #' @export
-volcano_plot <- function(data, exp_conditions){
+volcano_plot <- function(data){
   # Boundary for the MSI scale
   bound <- ceiling(log10(max(data$MSI)))
   # String of character for the x-axis
-  exp_conditions <- paste(exp_conditions, collapse = " <-> ")
+  exp_conditions <- paste0("log2 fold change (", unique(data$log2FC_ratio), ")")
   # Compute limit of the x-axis
   lim <- max(abs(data$log2foldchange))
   ## If the maximum is inferior than 1, set the limit at 1.1 to be able to draw the vertical lines
@@ -64,7 +63,7 @@ volcano_plot <- function(data, exp_conditions){
     geom_point(aes_string(colour = "adjpval_thres", size = "MSI")) +
     theme_bw() +
     ylab("-log10(adjusted p-value)") +
-    xlab(paste("log2 fold change \n ", exp_conditions)) +
+    xlab(exp_conditions) +
     xlim((0-lim), (0+lim)) +
     geom_vline(xintercept = 1, col = "gray41", linetype = "dotted", size = 1) + #fold-change less than 2 as log2(2) = 1
     geom_vline(xintercept = -1, col = "gray41", linetype = "dotted", size = 1) +
@@ -114,8 +113,13 @@ function_compute_log2foldchange <- function(data, condition, protein_names){
     dplyr::summarise_all("mean")
   # log2 fold change
   mean_log2foldchange <- log2(mean_per_condition[1, protein_names]) - log2(mean_per_condition[2, protein_names])
+  # Ratio
+  ratio <- paste0(as.character(pull(mean_per_condition[1, condition])), "/", 
+                  as.character(pull(mean_per_condition[2, condition])))
   # Return
-  tidyr::gather(mean_log2foldchange, "protein_name", "log2foldchange")
+  data.frame(tidyr::gather(mean_log2foldchange, "protein_name", "log2foldchange"),
+             "log2FC_ratio" = ratio)
+  
 }
 
 # Prepare the output from the CytoGLMM model
