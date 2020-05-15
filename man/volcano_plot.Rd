@@ -4,12 +4,10 @@
 \alias{volcano_plot}
 \title{Volcano plot}
 \usage{
-volcano_plot(data, exp_conditions)
+volcano_plot(data)
 }
 \arguments{
 \item{data}{Tibble, output of the \code{prepare_data_for_volcanoplot} function.}
-
-\item{exp_conditions}{Vector, conditions which are compared.}
 }
 \value{
 ggplot2 object.

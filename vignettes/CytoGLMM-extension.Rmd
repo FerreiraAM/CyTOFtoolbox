@@ -137,6 +137,5 @@ data_for_volplot <- prepare_data_for_volcanoplot(data = df_samples_NKcells,
                                                  condition = "term", 
                                                  CytoGLMM_fit = CytoGLMM_glmm_fit_aghaeepour2017immune)
 # Volcano plot
-volcano_plot(data = data_for_volplot, 
-             exp_conditions = c("1st trim", "3rd trim"))
+volcano_plot(data = data_for_volplot)
 ```
