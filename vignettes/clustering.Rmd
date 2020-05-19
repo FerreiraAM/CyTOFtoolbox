@@ -275,6 +275,7 @@ res_DA_aghaeepour_voom <- diffcyt(aghaeepour_sub_data,
 
 Additional notes for the analysis:
 
+- A third model is available `diffcyt-DA-GLMM` which fits a generalized linear mixed model (GLMM) for each cluster and then calculates differential tests separately for each cluster with the General Linear Hypothesis Test (`glht` function).
 - With this dataset, the comparison is straightforward. However in case you need 
 to filter for the comparison, the `filterSCE()` (from the `CATALYST` package)
 function can be used.
