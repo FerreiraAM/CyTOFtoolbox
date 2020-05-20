@@ -24,8 +24,14 @@ prepare_data_for_volcanoplot <- function(data, protein_names = NULL, condition, 
     stop(paste0(paste(protein_not_in, collapse = "; "), " not used in the CytoGLMM analysis.
                 Please check the protein_names vector parameter."))
   }
+  # Extract the comparison
+  comparison <- function_extract_comparison(data = CytoGLMM_fit, condition = condition)
+  # Filter the raw data
+  data_conditions <- pull(data, condition)
+  data_filtered <- data[data_conditions %in% comparison, ]
   # Add 0.05 to the marker values (because many 1 in the data)
-  data_05 <- dplyr::mutate_at(data, .vars = protein_names, .funs = function_add_05)
+  data_05 <- dplyr::mutate_at(data_filtered, .vars = protein_names, .funs = function_add_05)
+  
   # Compute log2 fold change
   data_05_log2foldchange <- function_compute_log2foldchange(data = data_05,
                                                             protein_names = protein_names,
@@ -97,6 +103,17 @@ function_compute_MSI <- function(data, protein_names){
     dplyr::summarise_all("mean")
   # Return
   tidyr::gather(MSI_data, "protein_name", "MSI")
+}
+
+# Extract the condition used in the data (fit)
+#
+# @param data Cytoglmm object, results from the CytoGLMM model.
+# @param condition Character, columns name where the condition are stored.
+# @return Vector.
+function_extract_comparison <- function(data, condition){
+  two_conditions <- pull(unique(data$df_samples_subset[, condition]))
+  # Return
+  as.character(two_conditions)
 }
 
 # Compute log2 fold change for each marker between 2 conditions
