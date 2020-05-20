@@ -27,7 +27,7 @@ prepare_data_for_volcanoplot <- function(data, protein_names = NULL, condition, 
   # Extract the comparison
   comparison <- function_extract_comparison(data = CytoGLMM_fit, condition = condition)
   # Filter the raw data
-  data_conditions <- pull(data, condition)
+  data_conditions <- dplyr::pull(data, condition)
   data_filtered <- data[data_conditions %in% comparison, ]
   # Add 0.05 to the marker values (because many 1 in the data)
   data_05 <- dplyr::mutate_at(data_filtered, .vars = protein_names, .funs = function_add_05)
@@ -111,7 +111,7 @@ function_compute_MSI <- function(data, protein_names){
 # @param condition Character, columns name where the condition are stored.
 # @return Vector.
 function_extract_comparison <- function(data, condition){
-  two_conditions <- pull(unique(data$df_samples_subset[, condition]))
+  two_conditions <- dplyr::pull(unique(data$df_samples_subset[, condition]))
   # Return
   as.character(two_conditions)
 }
@@ -131,8 +131,8 @@ function_compute_log2foldchange <- function(data, condition, protein_names){
   # log2 fold change
   mean_log2foldchange <- log2(mean_per_condition[1, protein_names]) - log2(mean_per_condition[2, protein_names])
   # Ratio
-  ratio <- paste0(as.character(pull(mean_per_condition[1, condition])), "/", 
-                  as.character(pull(mean_per_condition[2, condition])))
+  ratio <- paste0(as.character(dplyr::pull(mean_per_condition[1, condition])), "/", 
+                  as.character(dplyr::pull(mean_per_condition[2, condition])))
   # Return
   data.frame(tidyr::gather(mean_log2foldchange, "protein_name", "log2foldchange"),
              "log2FC_ratio" = ratio)
