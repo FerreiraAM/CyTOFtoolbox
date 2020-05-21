@@ -111,7 +111,7 @@ function_compute_MSI <- function(data, protein_names){
 # @param condition Character, columns name where the condition are stored.
 # @return Vector.
 function_extract_comparison <- function(data, condition){
-  two_conditions <- dplyr::pull(unique(data$df_samples_subset[, condition]))
+  two_conditions <- unique(dplyr::pull(data$df_samples_subset, condition))
   # Return
   as.character(two_conditions)
 }
