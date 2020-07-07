@@ -176,6 +176,13 @@ $k$ clusters, we can determine the *optimal* number of cluster:
 # Print the delta area plot
 metadata(aghaeepour_sub_data)$delta_area
 ```
+Once the optimal number of clusters is determined, the marker expressions in each 
+cluster can be visualized in the following heatmap:
+
+```{r plot_cluster_heatmap}
+# For instance if we decide on 6 metaclusters
+plotClusterHeatmap(aghaeepour_sub_data, k = "meta6")
+```
 
 ## Dimensionality reduction with UMAP
 
@@ -186,7 +193,9 @@ The dimensionality reduction (DR) is computed with UMAP, using the `uwot` packag
 umap_aghaeepour_input_data <- t(assay(aghaeepour_sub_data))
 # UMAP dimensionality reduction
 set.seed(1234)
-dr_umap_aghaeepour <- uwot::umap(umap_aghaeepour_input_data, n_neighbors = 20, min_dist = 0.1)
+dr_umap_aghaeepour <- uwot::umap(umap_aghaeepour_input_data, 
+                                 n_neighbors = 20, 
+                                 min_dist = 0.1)
 ```
 
 The computed DR is added to the SCE object.
