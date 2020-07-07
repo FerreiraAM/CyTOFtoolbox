@@ -64,6 +64,8 @@ volcano_plot <- function(data){
   if(lim < 1){
     lim <- 1.1
   }
+  # Extract alpha value
+  alpha <- unique(data$alpha)
   # Plot
   ggplot(data, aes_string(x = "log2foldchange", y = "log10_adjpval")) +
     geom_point(aes_string(colour = "adjpval_thres", size = "MSI")) +
@@ -73,10 +75,10 @@ volcano_plot <- function(data){
     xlim((0-lim), (0+lim)) +
     geom_vline(xintercept = 1, col = "gray41", linetype = "dotted", size = 1) + #fold-change less than 2 as log2(2) = 1
     geom_vline(xintercept = -1, col = "gray41", linetype = "dotted", size = 1) +
-    geom_hline(yintercept = -log10(0.05), col = "gray41", linetype = "dotted", size = 1) +
+    geom_hline(yintercept = -log10(alpha), col = "gray41", linetype = "dotted", size = 1) +
     geom_vline(xintercept = 0, col = "red", size = 0.5) +
     geom_text_repel(aes_string(x = "log2foldchange", y = "log10_adjpval", label = "protein_name", colour = "adjpval_thres"), show.legend = FALSE) +
-    scale_color_grey(start = 0.8, end = 0.2, name = "Adjusted p-value < 0.05") +
+    scale_color_grey(start = 0.8, end = 0.2, name = paste("Adjusted p-value < ", alpha)) +
     scale_size_continuous(name = "MSI", breaks = c(0, 1:2 %o% 10^(0:bound)))
 }
 
@@ -149,12 +151,15 @@ function_prepare_output_CytoGLMMmodel <- function(data, alpha, protein_names){
   # Extract the summary
   sum_data <- dplyr::filter(summary(data), .data$protein_name %in% protein_names)
   # Add a threshold column on the adjusted p-values
-  sum_data <- dplyr::mutate(sum_data, adjpval_thres = ifelse(.data$pvalues_adj < 0.05, "significant", "non-significant"))
+  sum_data <- dplyr::mutate(sum_data, 
+                            adjpval_thres = ifelse(.data$pvalues_adj < alpha, 
+                                                   "significant", 
+                                                   "non-significant"))
   # Transform the adjusted p-values with log10
   sum_data <- sum_data %>%
     dplyr::mutate(log10_adjpval = -log10(.data$pvalues_adj))
   # Return
-  return(sum_data)
+  return(cbind(sum_data, "alpha" = alpha))
 }
 
 

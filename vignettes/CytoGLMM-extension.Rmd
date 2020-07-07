@@ -128,7 +128,11 @@ Plot the volcano plot as a *complementary* plot of the CytoGLMM model output.
 As input parameters, we need:
 
 - The raw data (i.e. untransformed data to compute the global Mean Signal Intensity (MSI));
-- The output of the `CytoGLMM::cytoglmm` function.
+- The output of the `CytoGLMM::cytoglmm` function;
+- The condition tested in the `CytoGLMM` model.
+
+Note that by default the p-value threshold equals $0.05$, it can be modify by 
+using the input parameter alpha in the `prepare_data_for_volcanoplot` function.
 
 ```{r volcano_plot}
 # Prepare the data
