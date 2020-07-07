@@ -169,6 +169,8 @@ aghaeepour_sub_data <- cluster(aghaeepour_sub_data,
                                verbose = FALSE, seed = 1234)
 ```
 
+### Delta area plot
+
 Based on the delta area plot which represents the stability gained when using
 $k$ clusters, we can determine the *optimal* number of cluster:
 
@@ -176,6 +178,9 @@ $k$ clusters, we can determine the *optimal* number of cluster:
 # Print the delta area plot
 metadata(aghaeepour_sub_data)$delta_area
 ```
+
+### Marker expression's heatmap 
+
 Once the optimal number of clusters is determined, the marker expressions in each 
 cluster can be visualized in the following heatmap:
 
@@ -183,6 +188,25 @@ cluster can be visualized in the following heatmap:
 # For instance if we decide on 6 metaclusters
 plotClusterHeatmap(aghaeepour_sub_data, k = "meta6")
 ```
+
+### Manual annotation
+
+The metacluster's names can be manually annotated based for instance on the marker
+expressions. Below an example on renaming the *meta3* clusters:
+
+```{r cluster_manual_annotation}
+merging_table_clusters <- tibble("old_cluster" = 1:3,
+                                 "new_cluster" = c("1: cluster A",
+                                                   "2: cluster B",
+                                                   "3: cluster C"))
+# Add meta3 manual values
+aghaeepour_sub_data_manual_annotated <- mergeClusters(aghaeepour_sub_data, 
+                                                      k = "meta3", 
+                                                      table = merging_table_clusters, 
+                                                      id = "manual_meta3")
+head(cluster_codes(aghaeepour_sub_data_manual_annotated)[,c("meta3", "manual_meta3")])
+```
+
 
 ## Dimensionality reduction with UMAP
 
