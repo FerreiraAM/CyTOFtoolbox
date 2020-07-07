@@ -135,7 +135,10 @@ if (!all(colnames(flowSet_aghaeepour_sub_data) %in%
 ## Prepare the data
 
 The last step is to create a `SingleCellExperiment` (SCE) containing the FCS file values,
-as well as the metadata.
+as well as the metadata. The input parameters are (1) the flowSet, (2) marker's 
+information, (3) sample's information, (4) a list specifying the column names
+in the sample's information. Details about the data prepation function can be
+find by typing `?CATALYST::prepData`.
 
 ```{r prepare_data}
 ## Prepare the data
@@ -196,7 +199,7 @@ reducedDims(aghaeepour_sub_data) <- list("UMAP" = dr_umap_aghaeepour)
 
 ### Visualization of the clusters on the UMAP space
 
-The `plot_metacluster` function allows the visualization of the metaclusters in
+The `plot_metacluster()` function allows the visualization of the metaclusters in
 the dimensional reduction space (as UMAP). It is a `ggplot2` object.
 
 ```{r plot_cluster, eval = TRUE}
