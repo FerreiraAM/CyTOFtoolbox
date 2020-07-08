@@ -206,7 +206,9 @@ aghaeepour_sub_data_manual_annotated <- mergeClusters(aghaeepour_sub_data,
                                                       id = "manual_meta3")
 head(cluster_codes(aghaeepour_sub_data_manual_annotated)[,c("meta3", "manual_meta3")])
 ```
-
+ 
+ Additional note: The manually annotated clusters (e.g. `manual_meta3` instead of `meta3`) can be 
+ used through the whole downstream analysis.
 
 ## Dimensionality reduction with UMAP
 
@@ -233,7 +235,7 @@ reducedDims(aghaeepour_sub_data) <- list("UMAP" = dr_umap_aghaeepour)
 ### Visualization of the clusters on the UMAP space
 
 The `plot_metacluster()` function allows the visualization of the metaclusters in
-the dimensional reduction space (as UMAP). It is a `ggplot2` object.
+the dimensional reduction space (as UMAP). It returns a `ggplot2` object.
 
 ```{r plot_cluster, eval = TRUE}
 # Extract SCE information before plotting
@@ -275,13 +277,13 @@ comparisons (e.g. `1st_trim` versus `3rd_trim`; and `1st_trim` versus `2nd_trim`
 the data must be filter prior running the DA test. The `filterSCE()` 
 (from the `CATALYST` package) function can be used.
 
-The two models presented below request to create:
+The two models presented below request the creation of the two following matrices:
 
 - A *design matrix* for the model fitting. It is matrix summarizing the explanatory
 variables: the first column represent the intercept and the other(s) column(s) the
 inter-relationship between the samples;
 - A *contrast matrix* for the differential testing. It is a matrix which specifies
-the comparison of interest, i.e. what are the combination of paramaters in the 
+the comparison of interest, i.e. what are the combination of parameters in the 
 model to test. The entries correspond to the columns in the design matrix. In
 the examples below, we are interested in the second column of the design matrix 
 that determines which condition the samples are assigned to.
@@ -348,7 +350,8 @@ Details can be find by typing `testDA_GLMM` in the R console.
 - Factors in the metadata crash the analysis.
 - `NA` values in the results usually mean that there is not enough cells in the
 cluster. By default, the clusters are kept for differential testing if they have at
-least the minimum of cells ($n = 3$) in at least a minimum of samples ($number of sample / 2$). Some samples might not have any cells (or a low number of cells) in this cluster.
+least the minimum of cells ($n = 3$) in at least a minimum of samples ($number of sample / 2$). 
+Some samples might not have any cells (or a low number of cells) in this cluster.
 
 ### Visualization - DA test heatmap
 
