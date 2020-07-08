@@ -267,7 +267,11 @@ dev.off()
 ## Differential Abundance (DA) tests
 
 These tests from the `diffcyt` package perform differential abundance tests
-within each cell population, i.e. clusters.
+within each cell population, i.e. clusters. In this dataset, the comparison is 
+straightforward as there are 2 conditions (`3rd_trim` and `1st_trim`). 
+However in case multiple comparisons will be made, the data must be filter prior
+running the DA test. The `filterSCE()` (from the `CATALYST` package)
+function can be used.
 
 The default method recommended by the package use `edgeR`, which fits a negative 
 binomial generalized log linear model for each cluster and then performs likelihood 
@@ -311,7 +315,9 @@ res_DA_aghaeepour_voom <- diffcyt(aghaeepour_sub_data,
 
 Additional notes for the analysis:
 
-- A third model is available `diffcyt-DA-GLMM` which fits a generalized linear mixed model (GLMM) for each cluster and then calculates differential tests separately for each cluster with the General Linear Hypothesis Test (`glht` function).
+- A third model is available `diffcyt-DA-GLMM` which fits a generalized linear 
+mixed model (GLMM) for each cluster and then calculates differential tests 
+separately for each cluster with the General Linear Hypothesis Test (`glht` function).
 - With this dataset, the comparison is straightforward. However in case you need 
 to filter for the comparison, the `filterSCE()` (from the `CATALYST` package)
 function can be used.
