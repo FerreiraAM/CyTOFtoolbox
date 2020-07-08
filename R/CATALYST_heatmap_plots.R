@@ -116,19 +116,25 @@ plotDAheatmap <- function(x, y,
   ## Convert as character if any factor
   top <- dplyr::mutate_if(top, is.factor, as.character)
   
-  #### TODO: probably a better way to do this ####
-  # Code from CATALYST
-  # Match the levels of the sample ID
-  # ## Match function returns the position of the first match
-  # m <- match(levels(x$sample_id), x$sample_id)
-  # # Get the patient IDs
-  # df <- data.frame(factors[m, ], row.names = NULL)
+  # #### TODO: probably a better way to do this ####
+  # # Code from CATALYST
+  # # Match the levels of the sample ID
+  # # ## Match function returns the position of the first match
+  # # m <- match(levels(x$sample_id), x$sample_id)
+  # # # Get the patient IDs
+  # # df <- data.frame(factors[m, ], row.names = NULL)
+  # df <- as.data.frame(colData(x)) %>% 
+  #   dplyr::select(-.data$cluster_id, -.data$sample_id) %>% 
+  #   unique()
+  # # Order by condition
+  # df <- data.frame(df[order(df[,comparison]),], row.names = NULL)
+  # ####
+  ### BUG FIX ###
   df <- as.data.frame(colData(x)) %>% 
-    dplyr::select(-.data$cluster_id, -.data$sample_id) %>% 
-    unique()
-  # Order by condition
+    dplyr::select(-.data$cluster_id) %>% 
+    dplyr::distinct()
   df <- data.frame(df[order(df[,comparison]),], row.names = NULL)
-  ####
+  ### END - BUG FIX ###
   
   #### Relative abundance by cluster ####
   # Count the numbers of cell in each cluster per sample
@@ -139,6 +145,12 @@ plotDAheatmap <- function(x, y,
   frqs <- frqs[top$cluster_id, ]
   # As matrix
   frqs <- as.matrix(unclass(frqs))
+
+  ### BUG FIX continued ###
+  # order frqs with same sample id order as df
+  frqs <- frqs[, as.character(unique(df$sample_id))]
+  df$sample_id <- NULL
+  ### END - BUG FIX continued ###
   
   #### Normalization ####
   # If normalize is true
@@ -193,6 +205,7 @@ plotDAheatmap <- function(x, y,
                                     gp = gpar(col = "white"), 
                                     show_legend = c(TRUE, show_sample_ID, TRUE))
   }
+
   # PLot the heatmap 
   myheatmap <- Heatmap(matrix = frqs,
                        col = rev(RColorBrewer::brewer.pal(9, "RdGy")),
@@ -206,7 +219,7 @@ plotDAheatmap <- function(x, y,
                        rect_gp = gpar(col = "white"),
                        row_title = "cluster ID", 
                        cluster_rows = !order,
-                       show_row_names = TRUE,
+                       #show_row_names = TRUE,
                        row_names_side = "left",
                        show_column_names = show_sample_ID,
                        top_annotation = mycol_anno)
