@@ -275,6 +275,17 @@ comparisons (e.g. `1st_trim` versus `3rd_trim`; and `1st_trim` versus `2nd_trim`
 the data must be filter prior running the DA test. The `filterSCE()` 
 (from the `CATALYST` package) function can be used.
 
+The two models presented below request to create:
+
+- A *design matrix* for the model fitting. It is matrix summarizing the explanatory
+variables: the first column represent the intercept and the other(s) column(s) the
+inter-relationship between the samples;
+- A *contrast matrix* for the differential testing. It is a matrix which specifies
+the comparison of interest, i.e. what are the combination of paramaters in the 
+model to test. The entries correspond to the columns in the design matrix. In
+the examples below, we are interested in the second column of the design matrix 
+that determines which condition the samples are assigned to.
+
 The default method recommended by the package use `edgeR`, which fits a negative 
 binomial generalized log linear model for each cluster and then performs likelihood 
 ratio tests:
