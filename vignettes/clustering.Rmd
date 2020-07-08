@@ -274,7 +274,7 @@ in the number of cells between *two* conditions within each clusters.
 In this dataset, the comparison is straightforward as there are
 two conditions (`1st_trim` and `3rd_trim`). However in the case of multiple 
 comparisons (e.g. `1st_trim` versus `3rd_trim`; and `1st_trim` versus `2nd_trim`), 
-the data must be filter prior running the DA test. The `filterSCE()` 
+the data must be filtered prior running the DA test. The `filterSCE()` 
 (from the `CATALYST` package) function can be used.
 
 The two models presented below request the creation of the two following matrices:
@@ -286,7 +286,7 @@ inter-relationship between the samples;
 the comparison of interest, i.e. what are the combination of parameters in the 
 model to test. The entries correspond to the columns in the design matrix. In
 the examples below, we are interested in the second column of the design matrix 
-that determines which condition the samples are assigned to.
+that determines to which condition the samples are assigned.
 
 1. `diffcyt-DA-edgeR`
 
@@ -341,16 +341,16 @@ rowData(res_DA_aghaeepour_voom$res)[, c("cluster_id", "p_adj")]
 ```
 
 
-3. Additional notes for the analysis
+Additional notes for the analysis
 
 - A third model is available `diffcyt-DA-GLMM` which fits a generalized linear 
 mixed model (GLMM) for each cluster and then calculates differential tests 
 separately for each cluster with the General Linear Hypothesis Test (`glht` function).
 Details can be find by typing `testDA_GLMM` in the R console.
 - Factors in the metadata crash the analysis.
-- `NA` values in the results usually mean that there is not enough cells in the
+- `NA` values in the results usually indicate that there is not enough cells in the
 cluster. By default, the clusters are kept for differential testing if they have at
-least the minimum of cells ($n = 3$) in at least a minimum of samples ($number of sample / 2$). 
+least the minimum of cells ($n = 3$) in at least a minimum of samples (number of sample $/ 2$). 
 Some samples might not have any cells (or a low number of cells) in this cluster.
 
 ### Visualization - DA test heatmap
