@@ -137,7 +137,7 @@ if (!all(colnames(flowSet_aghaeepour_sub_data) %in%
 The last step is to create a `SingleCellExperiment` (SCE) containing the FCS file values,
 as well as the metadata. The input parameters are (1) the flowSet, (2) marker's 
 information, (3) sample's information, (4) a list specifying the column names
-in the sample's information. Details about the data prepation function can be
+in the sample's information. Details about the data preparation function can be
 find by typing `?CATALYST::prepData`.
 
 ```{r prepare_data}
@@ -267,11 +267,13 @@ dev.off()
 ## Differential Abundance (DA) tests
 
 These tests from the `diffcyt` package perform differential abundance tests
-within each cell population, i.e. clusters. In this dataset, the comparison is 
-straightforward as there are 2 conditions (`3rd_trim` and `1st_trim`). 
-However in case multiple comparisons will be made, the data must be filter prior
-running the DA test. The `filterSCE()` (from the `CATALYST` package)
-function can be used.
+within each cell population, i.e. clusters. These tests identify significant differences
+in the number of cells between *two* conditions within each clusters. 
+In this dataset, the comparison is straightforward as there are
+two conditions (`1st_trim` and `3rd_trim`). However in the case of multiple 
+comparisons (e.g. `1st_trim` versus `3rd_trim`; and `1st_trim` versus `2nd_trim`), 
+the data must be filter prior running the DA test. The `filterSCE()` 
+(from the `CATALYST` package) function can be used.
 
 The default method recommended by the package use `edgeR`, which fits a negative 
 binomial generalized log linear model for each cluster and then performs likelihood 
@@ -318,9 +320,6 @@ Additional notes for the analysis:
 - A third model is available `diffcyt-DA-GLMM` which fits a generalized linear 
 mixed model (GLMM) for each cluster and then calculates differential tests 
 separately for each cluster with the General Linear Hypothesis Test (`glht` function).
-- With this dataset, the comparison is straightforward. However in case you need 
-to filter for the comparison, the `filterSCE()` (from the `CATALYST` package)
-function can be used.
 - Factors in the metadata crash the analysis.
 
 ### Visualization - DA test heatmap
