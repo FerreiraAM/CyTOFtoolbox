@@ -286,9 +286,13 @@ model to test. The entries correspond to the columns in the design matrix. In
 the examples below, we are interested in the second column of the design matrix 
 that determines which condition the samples are assigned to.
 
+1. `diffcyt-DA-edgeR`
+
 The default method recommended by the package use `edgeR`, which fits a negative 
 binomial generalized log linear model for each cluster and then performs likelihood 
-ratio tests:
+ratio tests.
+
+Details can be find by typing `testDA_edgeR` in the R console.
 
 ```{r DA_tests_edgeR}
 # Create design & constrast matrix
@@ -303,12 +307,18 @@ res_DA_aghaeepour_edgeR <- diffcyt(aghaeepour_sub_data,
                                    method_DA = "diffcyt-DA-edgeR",
                                    design = design_matrix_aghaeepour, 
                                    contrast = contrast_aghaeepour)
+## To access the adjusted p-values results
+rowData(res_DA_aghaeepour_edgeR$res)[, c("cluster_id", "p_adj")]
 ```
+
+2. `diffcyt-DA-voom`
 
 There is a non-parametric test available with `voom`. The `voom` method transforms 
 the raw cluster cell counts and estimate observation-level precision weights in order 
 to stabilize the mean–variance relationship. Then, one Linear Model is fitted 
 for each cluster.
+
+Details can be find by typing `testDA_voom` in the R console.
 
 ```{r DA_tests_voom, results = 'hide', fig.show = 'hide'}
 # Design & constrast matrix are the same as for the diffcyt-DA-edgeR test
@@ -324,14 +334,21 @@ res_DA_aghaeepour_voom <- diffcyt(aghaeepour_sub_data,
                                   design = design_matrix_aghaeepour, 
                                   contrast = contrast_aghaeepour, 
                                   plot = FALSE)
+## To access the adjusted p-values results
+rowData(res_DA_aghaeepour_voom$res)[, c("cluster_id", "p_adj")]
 ```
 
-Additional notes for the analysis:
+
+3. Additional notes for the analysis
 
 - A third model is available `diffcyt-DA-GLMM` which fits a generalized linear 
 mixed model (GLMM) for each cluster and then calculates differential tests 
 separately for each cluster with the General Linear Hypothesis Test (`glht` function).
+Details can be find by typing `testDA_GLMM` in the R console.
 - Factors in the metadata crash the analysis.
+- `NA` values in the results usually mean that there is not enough cells in the
+cluster. By default, the clusters are kept for differential testing if they have at
+least the minimum of cells ($n = 3$) in at least a minimum of samples ($number of sample / 2$). Some samples might not have any cells (or a low number of cells) in this cluster.
 
 ### Visualization - DA test heatmap
 
