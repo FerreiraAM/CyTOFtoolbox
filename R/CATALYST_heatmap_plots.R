@@ -195,15 +195,13 @@ plotDAheatmap <- function(x, y,
   # If the colors are predefined, use them
   if(!all(is.na(predefined_colors))){
     mycol_anno <- HeatmapAnnotation(which = "column", df = df, col = predefined_colors, 
-                                    gp = gpar(col = "white"), 
-                                    show_legend = c(TRUE, show_sample_ID, TRUE))
+                                    gp = gpar(col = "white"))
   } else {
     # Else generate the colors
     cols <- colors_DAheatmap(exp_info = df, comparison = comparison)
     # Create a annotation for the Heatmap
     mycol_anno <- HeatmapAnnotation(which = "column", df = df, col = cols, 
-                                    gp = gpar(col = "white"), 
-                                    show_legend = c(TRUE, show_sample_ID, TRUE))
+                                    gp = gpar(col = "white"))
   }
 
   # PLot the heatmap 
