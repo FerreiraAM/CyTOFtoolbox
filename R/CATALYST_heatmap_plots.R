@@ -115,6 +115,36 @@ plotDAheatmap <- function(x, y,
   top <- as.data.frame(y[seq_len(top_n), ])
   ## Convert as character if any factor
   top <- dplyr::mutate_if(top, is.factor, as.character)
+  ### BUG FIX NB2 - clusters without cells ###
+  # Identify is there any NA values
+  is_na_values <- which(is.na(top), arr.ind=TRUE)
+  is_na_values <- unique(is_na_values[,"row"])
+  # If there is NA values
+  if(length(is_na_values) != 0){
+    # Extract the cluster information
+    cluster_is_na_values <- top[is_na_values, "cluster_id"]
+    # Identify if it is a lack of cells in this/these cluster(s)
+    ## Combine cluster IDs and sampels IDs
+    df_cl_ID <- data.frame("cluster_id" = x$cluster_id,
+                           "sample_id" = x$sample_id)
+    df_cl_ID$cluster_id <- as.factor(df_cl_ID$cluster_id)
+    ## Test if this/these cluster(s) are present in the samples
+    is_cells <- cluster_is_na_values %in% levels(df_cl_ID$cluster_id)
+    # if(all(is_cells)){
+    #   # cells are present but it probably did not pass the filtering step of the 
+    #   # diffcyt package
+    # }
+    if (any(is_cells == FALSE)){
+      # At least one cluster have no cells
+      warning(paste0("No cell in cluster(s) ", 
+                     paste0(cluster_is_na_values[!is_cells], collapse = ", "),
+                     ". This/these cluster(s) won't be displayed on the heatmap."))
+      # Update top
+      idx_to_remove <- is_na_values[!is_cells]
+      top <- top[-idx_to_remove,]
+    }
+  }
+  ### END BUG FIX NB2 - clusters without cells ###
   
   # #### TODO: probably a better way to do this ####
   # # Code from CATALYST
