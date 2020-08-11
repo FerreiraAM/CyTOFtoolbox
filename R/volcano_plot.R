@@ -149,7 +149,7 @@ function_compute_log2foldchange <- function(data, condition, protein_names){
   t_mean_per_condition <- as.data.frame(t_mean_per_condition)
   t_mean_per_condition$protein_name <- rownames(t_mean_per_condition)
   rownames(t_mean_per_condition) <- NULL
-  t_mean_per_condition <- dplyr::filter(t_mean_per_condition, !(protein_name == condition))
+  t_mean_per_condition <- dplyr::filter(t_mean_per_condition, !(.data$protein_name == condition))
   
   # log2 fold change
   mean_log2foldchange <- log2(mean_per_condition[1, protein_names]) - log2(mean_per_condition[2, protein_names])
