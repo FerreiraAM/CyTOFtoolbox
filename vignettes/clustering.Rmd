@@ -341,12 +341,23 @@ rowData(res_DA_aghaeepour_voom$res)[, c("cluster_id", "p_adj")]
 ```
 
 
-Additional notes for the analysis
+**Additional notes** for the analysis:
 
 - A third model is available `diffcyt-DA-GLMM` which fits a generalized linear 
 mixed model (GLMM) for each cluster and then calculates differential tests 
 separately for each cluster with the General Linear Hypothesis Test (`glht` function).
 Details can be find by typing `testDA_GLMM` in the R console.
+-  In case some clusters have no cell after filtering for the conditions we 
+are comparing. An empty cluster will trigger an error and the results won't correspond 
+to the right clusters. To avoid it you must used the following command before 
+performing the test: 
+
+```{r fix_for_empty_clusters, eval = FALSE}
+# Fix
+aghaeepour_sub_data@colData$cluster_id <- 
+  as.numeric(as.character(aghaeepour_sub_data@colData$cluster_id))
+```
+
 - Factors in the metadata crash the analysis.
 - `NA` values in the results usually indicate that there is not enough cells in the
 cluster. By default, the clusters are kept for differential testing if they have at
@@ -416,5 +427,3 @@ plotDAheatmap(x = aghaeepour_sub_data,
               all = TRUE,
               predefined_colors = colors_aghaeepour) # Add colors as an input parameter
 ```
-
- 
