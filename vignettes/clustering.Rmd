@@ -135,7 +135,10 @@ if (!all(colnames(flowSet_aghaeepour_sub_data) %in%
 ## Prepare the data
 
 The last step is to create a `SingleCellExperiment` (SCE) containing the FCS file values,
-as well as the metadata.
+as well as the metadata. The input parameters are (1) the flowSet, (2) marker's 
+information, (3) sample's information, (4) a list specifying the column names
+in the sample's information. Details about the data preparation function can be
+find by typing `?CATALYST::prepData`.
 
 ```{r prepare_data}
 ## Prepare the data
@@ -166,6 +169,8 @@ aghaeepour_sub_data <- cluster(aghaeepour_sub_data,
                                verbose = FALSE, seed = 1234)
 ```
 
+### Delta area plot
+
 Based on the delta area plot which represents the stability gained when using
 $k$ clusters, we can determine the *optimal* number of cluster:
 
@@ -173,6 +178,37 @@ $k$ clusters, we can determine the *optimal* number of cluster:
 # Print the delta area plot
 metadata(aghaeepour_sub_data)$delta_area
 ```
+
+### Marker expression's heatmap 
+
+Once the optimal number of clusters is determined, the marker expressions in each 
+cluster can be visualized in the following heatmap:
+
+```{r plot_cluster_heatmap}
+# For instance if we decide on 6 metaclusters
+plotClusterHeatmap(aghaeepour_sub_data, k = "meta6")
+```
+
+### Manual annotation
+
+The metacluster's names can be manually annotated based for instance on the marker
+expressions. Below an example on renaming the *meta3* clusters:
+
+```{r cluster_manual_annotation}
+merging_table_clusters <- tibble("old_cluster" = 1:3,
+                                 "new_cluster" = c("1: cluster A",
+                                                   "2: cluster B",
+                                                   "3: cluster C"))
+# Add meta3 manual values
+aghaeepour_sub_data_manual_annotated <- mergeClusters(aghaeepour_sub_data, 
+                                                      k = "meta3", 
+                                                      table = merging_table_clusters, 
+                                                      id = "manual_meta3")
+head(cluster_codes(aghaeepour_sub_data_manual_annotated)[,c("meta3", "manual_meta3")])
+```
+ 
+ Additional note: The manually annotated clusters (e.g. `manual_meta3` instead of `meta3`) can be 
+ used through the whole downstream analysis.
 
 ## Dimensionality reduction with UMAP
 
@@ -183,7 +219,9 @@ The dimensionality reduction (DR) is computed with UMAP, using the `uwot` packag
 umap_aghaeepour_input_data <- t(assay(aghaeepour_sub_data))
 # UMAP dimensionality reduction
 set.seed(1234)
-dr_umap_aghaeepour <- uwot::umap(umap_aghaeepour_input_data, n_neighbors = 20, min_dist = 0.1)
+dr_umap_aghaeepour <- uwot::umap(umap_aghaeepour_input_data, 
+                                 n_neighbors = 20, 
+                                 min_dist = 0.1)
 ```
 
 The computed DR is added to the SCE object.
@@ -196,8 +234,8 @@ reducedDims(aghaeepour_sub_data) <- list("UMAP" = dr_umap_aghaeepour)
 
 ### Visualization of the clusters on the UMAP space
 
-The `plot_metacluster` function allows the visualization of the metaclusters in
-the dimensional reduction space (as UMAP). It is a `ggplot2` object.
+The `plot_metacluster()` function allows the visualization of the metaclusters in
+the dimensional reduction space (as UMAP). It returns a `ggplot2` object.
 
 ```{r plot_cluster, eval = TRUE}
 # Extract SCE information before plotting
@@ -231,11 +269,32 @@ dev.off()
 ## Differential Abundance (DA) tests
 
 These tests from the `diffcyt` package perform differential abundance tests
-within each cell population, i.e. clusters.
+within each cell population, i.e. clusters. These tests identify significant differences
+in the number of cells between *two* conditions within each clusters. 
+In this dataset, the comparison is straightforward as there are
+two conditions (`1st_trim` and `3rd_trim`). However in the case of multiple 
+comparisons (e.g. `1st_trim` versus `3rd_trim`; and `1st_trim` versus `2nd_trim`), 
+the data must be filtered prior running the DA test. The `filterSCE()` 
+(from the `CATALYST` package) function can be used.
+
+The two models presented below request the creation of the two following matrices:
+
+- A *design matrix* for the model fitting. It is matrix summarizing the explanatory
+variables: the first column represent the intercept and the other(s) column(s) the
+inter-relationship between the samples;
+- A *contrast matrix* for the differential testing. It is a matrix which specifies
+the comparison of interest, i.e. what are the combination of parameters in the 
+model to test. The entries correspond to the columns in the design matrix. In
+the examples below, we are interested in the second column of the design matrix 
+that determines to which condition the samples are assigned.
+
+1. `diffcyt-DA-edgeR`
 
 The default method recommended by the package use `edgeR`, which fits a negative 
 binomial generalized log linear model for each cluster and then performs likelihood 
-ratio tests:
+ratio tests.
+
+Details can be find by typing `testDA_edgeR` in the R console.
 
 ```{r DA_tests_edgeR}
 # Create design & constrast matrix
@@ -250,12 +309,18 @@ res_DA_aghaeepour_edgeR <- diffcyt(aghaeepour_sub_data,
                                    method_DA = "diffcyt-DA-edgeR",
                                    design = design_matrix_aghaeepour, 
                                    contrast = contrast_aghaeepour)
+## To access the adjusted p-values results
+rowData(res_DA_aghaeepour_edgeR$res)[, c("cluster_id", "p_adj")]
 ```
+
+2. `diffcyt-DA-voom`
 
 There is a non-parametric test available with `voom`. The `voom` method transforms 
 the raw cluster cell counts and estimate observation-level precision weights in order 
 to stabilize the mean–variance relationship. Then, one Linear Model is fitted 
 for each cluster.
+
+Details can be find by typing `testDA_voom` in the R console.
 
 ```{r DA_tests_voom, results = 'hide', fig.show = 'hide'}
 # Design & constrast matrix are the same as for the diffcyt-DA-edgeR test
@@ -271,15 +336,33 @@ res_DA_aghaeepour_voom <- diffcyt(aghaeepour_sub_data,
                                   design = design_matrix_aghaeepour, 
                                   contrast = contrast_aghaeepour, 
                                   plot = FALSE)
+## To access the adjusted p-values results
+rowData(res_DA_aghaeepour_voom$res)[, c("cluster_id", "p_adj")]
 ```
 
-Additional notes for the analysis:
 
-- A third model is available `diffcyt-DA-GLMM` which fits a generalized linear mixed model (GLMM) for each cluster and then calculates differential tests separately for each cluster with the General Linear Hypothesis Test (`glht` function).
-- With this dataset, the comparison is straightforward. However in case you need 
-to filter for the comparison, the `filterSCE()` (from the `CATALYST` package)
-function can be used.
+**Additional notes** for the analysis:
+
+- A third model is available `diffcyt-DA-GLMM` which fits a generalized linear 
+mixed model (GLMM) for each cluster and then calculates differential tests 
+separately for each cluster with the General Linear Hypothesis Test (`glht` function).
+Details can be find by typing `testDA_GLMM` in the R console.
+-  In case some clusters have no cell after filtering for the conditions we 
+are comparing. An empty cluster will trigger an error and the results won't correspond 
+to the right clusters. To avoid it you must used the following command before 
+performing the test: 
+
+```{r fix_for_empty_clusters, eval = FALSE}
+# Fix
+aghaeepour_sub_data@colData$cluster_id <- 
+  as.numeric(as.character(aghaeepour_sub_data@colData$cluster_id))
+```
+
 - Factors in the metadata crash the analysis.
+- `NA` values in the results usually indicate that there is not enough cells in the
+cluster. By default, the clusters are kept for differential testing if they have at
+least the minimum of cells ($n = 3$) in at least a minimum of samples (number of sample $/ 2$). 
+Some samples might not have any cells (or a low number of cells) in this cluster.
 
 ### Visualization - DA test heatmap
 
@@ -344,5 +427,3 @@ plotDAheatmap(x = aghaeepour_sub_data,
               all = TRUE,
               predefined_colors = colors_aghaeepour) # Add colors as an input parameter
 ```
-
- 

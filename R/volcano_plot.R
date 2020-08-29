@@ -24,10 +24,19 @@ prepare_data_for_volcanoplot <- function(data, protein_names = NULL, condition, 
     stop(paste0(paste(protein_not_in, collapse = "; "), " not used in the CytoGLMM analysis.
                 Please check the protein_names vector parameter."))
   }
-  # Add 0.05 to the marker values (because many 1 in the data)
-  data_05 <- dplyr::mutate_at(data, .vars = protein_names, .funs = function_add_05)
-  # Compute log2 fold change
-  data_05_log2foldchange <- function_compute_log2foldchange(data = data_05,
+  # Extract the comparison
+  comparison <- function_extract_comparison(data = CytoGLMM_fit, condition = condition)
+  # Filter the raw data
+  data_conditions <- dplyr::pull(data, condition)
+  data_filtered <- data[data_conditions %in% comparison, ]
+  # # Add 0.05 to the marker values (because many 1 in the data)
+  # data_05 <- dplyr::mutate_at(data_filtered, .vars = protein_names, .funs = function_add_05)
+  # 
+  # # Compute log2 fold change
+  # data_05_log2foldchange <- function_compute_log2foldchange(data = data_05,
+  #                                                           protein_names = protein_names,
+  #                                                           condition = condition)
+  data_log2foldchange <- function_compute_log2foldchange(data = data_filtered,
                                                             protein_names = protein_names,
                                                             condition = condition)
   # Compute MSI
@@ -37,8 +46,11 @@ prepare_data_for_volcanoplot <- function(data, protein_names = NULL, condition, 
                                                                  alpha = alpha,
                                                                  protein_names = protein_names)
   # Combine data
+  # function_combine_datas(summary_CytoGLMM_fit = formated_CytoGLMM_fit,
+  #                        data_log2foldchange = data_05_log2foldchange,
+  #                        data_MSI = data_MSI)
   function_combine_datas(summary_CytoGLMM_fit = formated_CytoGLMM_fit,
-                         data_log2foldchange = data_05_log2foldchange,
+                         data_log2foldchange = data_log2foldchange,
                          data_MSI = data_MSI)
   }
 
@@ -48,8 +60,13 @@ prepare_data_for_volcanoplot <- function(data, protein_names = NULL, condition, 
 #' @return ggplot2 object.
 #' @export
 volcano_plot <- function(data){
-  # Boundary for the MSI scale
-  bound <- ceiling(log10(max(data$MSI)))
+  # # Boundary for the MSI scale
+  # bound <- ceiling(log10(max(data$MSI)))
+  # Break for MSI boundaries
+  MSI_break <- labeling::extended((range(data$avg_MSI)[1]), 
+                                  range(data$avg_MSI)[2],
+                                  m = 5, only.loose = TRUE)
+  MSI_break[1] <- 1
   # String of character for the x-axis
   exp_conditions <- paste0("log2 fold change (", unique(data$log2FC_ratio), ")")
   # Compute limit of the x-axis
@@ -58,20 +75,24 @@ volcano_plot <- function(data){
   if(lim < 1){
     lim <- 1.1
   }
+  # Extract alpha value
+  alpha <- unique(data$alpha)
   # Plot
   ggplot(data, aes_string(x = "log2foldchange", y = "log10_adjpval")) +
-    geom_point(aes_string(colour = "adjpval_thres", size = "MSI")) +
+    geom_point(aes_string(colour = "adjpval_thres", size = "avg_MSI")) +
     theme_bw() +
     ylab("-log10(adjusted p-value)") +
     xlab(exp_conditions) +
     xlim((0-lim), (0+lim)) +
     geom_vline(xintercept = 1, col = "gray41", linetype = "dotted", size = 1) + #fold-change less than 2 as log2(2) = 1
     geom_vline(xintercept = -1, col = "gray41", linetype = "dotted", size = 1) +
-    geom_hline(yintercept = -log10(0.05), col = "gray41", linetype = "dotted", size = 1) +
+    geom_hline(yintercept = -log10(alpha), col = "gray41", linetype = "dotted", size = 1) +
     geom_vline(xintercept = 0, col = "red", size = 0.5) +
     geom_text_repel(aes_string(x = "log2foldchange", y = "log10_adjpval", label = "protein_name", colour = "adjpval_thres"), show.legend = FALSE) +
-    scale_color_grey(start = 0.8, end = 0.2, name = "Adjusted p-value < 0.05") +
-    scale_size_continuous(name = "MSI", breaks = c(0, 1:2 %o% 10^(0:bound)))
+    scale_color_grey(start = 0.8, end = 0.2, name = paste("Adjusted p-value < ", alpha)) +
+    scale_size_continuous(name = "Average MSI", breaks = MSI_break) +
+    guides(size = guide_legend(order = 1), color = guide_legend(order = 2))
+    # scale_size_continuous(name = "MSI", breaks = c(0, 1:2 %o% 10^(0:bound)))
 }
 
 # HELPER FUNCTIONS =================================================================================
@@ -96,7 +117,18 @@ function_compute_MSI <- function(data, protein_names){
     dplyr::select(protein_names) %>%
     dplyr::summarise_all("mean")
   # Return
-  tidyr::gather(MSI_data, "protein_name", "MSI")
+  tidyr::gather(MSI_data, "protein_name", "avg_MSI")
+}
+
+# Extract the condition used in the data (fit)
+#
+# @param data Cytoglmm object, results from the CytoGLMM model.
+# @param condition Character, columns name where the condition are stored.
+# @return Vector.
+function_extract_comparison <- function(data, condition){
+  two_conditions <- unique(dplyr::pull(data$df_samples_subset, condition))
+  # Return
+  as.character(two_conditions)
 }
 
 # Compute log2 fold change for each marker between 2 conditions
@@ -111,14 +143,24 @@ function_compute_log2foldchange <- function(data, condition, protein_names){
     dplyr::select(c(condition, protein_names)) %>%
     group_by(.dots=condition) %>%
     dplyr::summarise_all("mean")
+  # Transpose
+  t_mean_per_condition <- t(mean_per_condition)
+  colnames(t_mean_per_condition) <- paste0("avg_", t_mean_per_condition[condition,])
+  t_mean_per_condition <- as.data.frame(t_mean_per_condition)
+  t_mean_per_condition$protein_name <- rownames(t_mean_per_condition)
+  rownames(t_mean_per_condition) <- NULL
+  t_mean_per_condition <- dplyr::filter(t_mean_per_condition, !(.data$protein_name == condition))
+  
   # log2 fold change
   mean_log2foldchange <- log2(mean_per_condition[1, protein_names]) - log2(mean_per_condition[2, protein_names])
   # Ratio
-  ratio <- paste0(as.character(pull(mean_per_condition[1, condition])), "/", 
-                  as.character(pull(mean_per_condition[2, condition])))
-  # Return
-  data.frame(tidyr::gather(mean_log2foldchange, "protein_name", "log2foldchange"),
+  ratio <- paste0(as.character(dplyr::pull(mean_per_condition[1, condition])), "/", 
+                  as.character(dplyr::pull(mean_per_condition[2, condition])))
+  # Result
+  res <- data.frame(tidyr::gather(mean_log2foldchange, "protein_name", "log2foldchange"),
              "log2FC_ratio" = ratio)
+  # Return
+  dplyr::left_join(res, t_mean_per_condition)
   
 }
 
@@ -132,12 +174,15 @@ function_prepare_output_CytoGLMMmodel <- function(data, alpha, protein_names){
   # Extract the summary
   sum_data <- dplyr::filter(summary(data), .data$protein_name %in% protein_names)
   # Add a threshold column on the adjusted p-values
-  sum_data <- dplyr::mutate(sum_data, adjpval_thres = ifelse(.data$pvalues_adj < 0.05, "significant", "non-significant"))
+  sum_data <- dplyr::mutate(sum_data, 
+                            adjpval_thres = ifelse(.data$pvalues_adj < alpha, 
+                                                   "significant", 
+                                                   "non-significant"))
   # Transform the adjusted p-values with log10
   sum_data <- sum_data %>%
     dplyr::mutate(log10_adjpval = -log10(.data$pvalues_adj))
   # Return
-  return(sum_data)
+  return(cbind(sum_data, "alpha" = alpha))
 }
 
 
