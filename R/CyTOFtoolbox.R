@@ -9,7 +9,7 @@
 #' A modified MDS plot function is also available, based on the original one from
 #' the `CytoGLMM` package. It adds a threshold on the correlation marker/MDS axes.
 #' 
-#' @section Clustering:
+#' @section Clustering: WARNING this section of the package is not present in this version 
 #' A modified heatmap plot of the differential abundance (DA) test results from 
 #' `CATALYST` package is available with the option of showing or not the sample
 #' IDs as well as predefining the colors if needed.
