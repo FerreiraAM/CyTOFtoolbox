@@ -26,7 +26,5 @@
 #' @importFrom ggrepel geom_text_repel
 #' @importFrom grid gpar
 #' @importFrom magrittr "%>%"
-#' @importFrom SummarizedExperiment assay colData rowData
 #' @importFrom S4Vectors metadata
-#' @importFrom ComplexHeatmap Heatmap HeatmapAnnotation 
 NULL
