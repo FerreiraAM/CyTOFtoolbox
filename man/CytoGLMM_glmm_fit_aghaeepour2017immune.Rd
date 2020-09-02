@@ -4,7 +4,8 @@
 \name{CytoGLMM_glmm_fit_aghaeepour2017immune}
 \alias{CytoGLMM_glmm_fit_aghaeepour2017immune}
 \title{Results of the GLMM  on a subset of the Aghaeepour et al. (2017) dataset}
-\format{A cytoglmm object:
+\format{
+A cytoglmm object:
 \describe{
   \item{glmmfit}{mhglm, fit of the model}
   \item{df_samples_subset}{tbl, susbet of the Aghaeepour et al 2017 dataset}
@@ -18,7 +19,8 @@
   \item{num_cores}{numeric, 4}
 
   ...
-}}
+}
+}
 \source{
 \url{https://zenodo.org/record/2652578/files/se_aghaeepour2017immune.Rdata}
 }
