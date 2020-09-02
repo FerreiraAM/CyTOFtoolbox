@@ -12,9 +12,7 @@ LazyData: true
 Depends:
   R (>= 3.6)
 Imports:
-  CATALYST (== 1.10.3),
   CytoGLMM,
-  ComplexHeatmap,
   cowplot,
   diffcyt,
   dplyr,
@@ -22,9 +20,9 @@ Imports:
   ggplot2,
   ggrepel,
   grid,
+  labeling,
   magrittr,
   RColorBrewer,
-  SingleCellExperiment,
   SummarizedExperiment,
   S4Vectors,
   scales,
@@ -35,5 +33,5 @@ Suggests:
   knitr,
   rmarkdown,
   uwot
-RoxygenNote: 7.0.2
+RoxygenNote: 7.1.1
 VignetteBuilder: knitr
