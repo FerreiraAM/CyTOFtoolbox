@@ -57,9 +57,10 @@ prepare_data_for_volcanoplot <- function(data, protein_names = NULL, condition, 
 #' Volcano plot
 #'
 #' @param data Tibble, output of the \code{prepare_data_for_volcanoplot} function.
+#' @param label Boolean, print the labels of the markers.
 #' @return ggplot2 object.
 #' @export
-volcano_plot <- function(data){
+volcano_plot <- function(data, label = TRUE){
   # # Boundary for the MSI scale
   # bound <- ceiling(log10(max(data$MSI)))
   # Break for MSI boundaries
@@ -78,7 +79,8 @@ volcano_plot <- function(data){
   # Extract alpha value
   alpha <- unique(data$alpha)
   # Plot
-  ggplot(data, aes_string(x = "log2foldchange", y = "log10_adjpval")) +
+  ## Without labels
+  p_withoutlabels <- ggplot(data, aes_string(x = "log2foldchange", y = "log10_adjpval")) +
     geom_point(aes_string(colour = "adjpval_thres", size = "avg_MSI")) +
     theme_bw() +
     ylab("-log10(adjusted p-value)") +
@@ -88,11 +90,19 @@ volcano_plot <- function(data){
     geom_vline(xintercept = -1, col = "gray41", linetype = "dotted", size = 1) +
     geom_hline(yintercept = -log10(alpha), col = "gray41", linetype = "dotted", size = 1) +
     geom_vline(xintercept = 0, col = "red", size = 0.5) +
-    geom_text_repel(aes_string(x = "log2foldchange", y = "log10_adjpval", label = "protein_name", colour = "adjpval_thres"), show.legend = FALSE) +
     scale_color_grey(start = 0.8, end = 0.2, name = paste("Adjusted p-value < ", alpha)) +
     scale_size_continuous(name = "Average MSI", breaks = MSI_break) +
     guides(size = guide_legend(order = 1), color = guide_legend(order = 2))
-    # scale_size_continuous(name = "MSI", breaks = c(0, 1:2 %o% 10^(0:bound)))
+  # scale_size_continuous(name = "MSI", breaks = c(0, 1:2 %o% 10^(0:bound)))
+  
+  if(label == TRUE){
+    ## Add the labels if label = TRUE
+    p_withlabels <- p_withoutlabels + 
+      geom_text_repel(aes_string(x = "log2foldchange", y = "log10_adjpval", label = "protein_name", colour = "adjpval_thres"), show.legend = FALSE)
+    p_withlabels
+  } else {
+    p_withoutlabels
+  }
 }
 
 # HELPER FUNCTIONS =================================================================================
