@@ -99,6 +99,7 @@ volcano_plot <- function(data, label = TRUE){
     ## Add the labels if label = TRUE
     p_withlabels <- p_withoutlabels + 
       geom_text_repel(aes_string(x = "log2foldchange", y = "log10_adjpval", label = "protein_name", colour = "adjpval_thres"), show.legend = FALSE)
+    p_withlabels
   } else {
     p_withoutlabels
   }
