@@ -13,6 +13,7 @@ devtools::install_github("FerreiraAM-stanford/CyTOFtoolbox",
 ```
 
 Note: The installation of the CytoGLMM package is mandatory.
+
 ```
 if (!requireNamespace("BiocManager", quietly = TRUE))
     install.packages("BiocManager")
@@ -21,14 +22,15 @@ BiocManager::install("CytoGLMM")
 
 ## Summary
 
-In this package, multiple functions have been created to complement the existing 
+In this package, functions were created to complement the existing 
 workflow:
 
 ### CytoGLMM extension
 
 - Volcano plot as a complementary plot to the cytoglmm analysis.
 - MDS plot with a threshold on the correlation marker/MDS axes.
-- To access the vignette: 
+
+To access the vignette: 
 
 ```
 vignette("CytoGLMM-extension", package = "CyTOFtoolbox")
