@@ -1,39 +1,27 @@
 Package: CyTOFtoolbox
 Type: Package
-Title: Tools box for the analysis of CyTOF data
+Title: Tool box for the analysis of CyTOF data
 Version: 0.1.0
-Authors@R: person("Anne-Maud", "Ferreira", email = "anne-maud.ferreirat@stanford.edu",
+Authors@R: person("Anne-Maud", "Ferreira", email = "anne-maud.ferreira@stanford.edu",
                   role = c("aut", "cre"))
-Description: This package regroups visualization tools for the analysis of CyTOF data.
-  It is used in the laboratory of Prof. Catherine Blish. 
+Description: This package regroups visualization tools for the analysis of CyTOF data. 
 License: LGPL-3
 Encoding: UTF-8
-LazyData: true
 Depends:
   R (>= 3.6)
 Imports:
-  CATALYST (== 1.10.3),
   CytoGLMM,
-  ComplexHeatmap,
   cowplot,
-  diffcyt,
   dplyr,
-  flowCore,
   ggplot2,
   ggrepel,
   grid,
+  labeling,
   magrittr,
-  RColorBrewer,
-  SingleCellExperiment,
-  SummarizedExperiment,
-  S4Vectors,
-  scales,
   tibble,
-  tidyr,
-  tidyverse
+  tidyr
 Suggests:
-  knitr,
-  rmarkdown,
-  uwot
-RoxygenNote: 7.0.2
+  BiocStyle,
+  knitr
+RoxygenNote: 7.1.2
 VignetteBuilder: knitr

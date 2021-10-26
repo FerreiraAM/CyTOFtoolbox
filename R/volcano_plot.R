@@ -92,7 +92,7 @@ volcano_plot <- function(data){
     scale_color_grey(start = 0.8, end = 0.2, name = paste("Adjusted p-value < ", alpha)) +
     scale_size_continuous(name = "Average MSI", breaks = MSI_break) +
     guides(size = guide_legend(order = 1), color = guide_legend(order = 2))
-    # scale_size_continuous(name = "MSI", breaks = c(0, 1:2 %o% 10^(0:bound)))
+  # scale_size_continuous(name = "MSI", breaks = c(0, 1:2 %o% 10^(0:bound)))
 }
 
 # HELPER FUNCTIONS =================================================================================

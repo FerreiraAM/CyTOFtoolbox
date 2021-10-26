@@ -1,7 +1,0 @@
-"filename" "patient_id" "condition"
-"1" "subsampled_Gates_PTLG001_2_IFNa_100.fcs" "PTLG001" "3rd_trim"
-"2" "subsampled_Gates_PTLG001_BL_IFNa_100.fcs" "PTLG001" "1st_trim"
-"3" "subsampled_Gates_PTLG002_2_IFNa_100.fcs" "PTLG002" "3rd_trim"
-"4" "subsampled_Gates_PTLG002_BL_IFNa_100.fcs" "PTLG002" "1st_trim"
-"5" "subsampled_Gates_PTLG003_2_IFNa_100.fcs" "PTLG003" "3rd_trim"
-"6" "subsampled_Gates_PTLG003_BL_IFNa_100.fcs" "PTLG003" "1st_trim"

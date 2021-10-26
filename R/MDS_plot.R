@@ -12,6 +12,8 @@
 #' @param cor_threshold Numeric, threshold on which marker to display in the circle
 #' plot (by default cor_threshold = 0.5).
 #' 
+#' @return ggplot2 plot.
+#' 
 #' @export
 plot_MDS_withthreshold <- function (df_samples, 
                                     protein_names, 
