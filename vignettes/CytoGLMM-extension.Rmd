@@ -1,6 +1,8 @@
 ---
 title: "CytoGLMM extension" 
-author: "Anne-Maud Ferreira"
+author: 
+  name: "Anne-Maud Ferreira"
+  affiliation: Department of Statistics, Stanford University
 date: "`r Sys.Date()`"
 package: CyTOFtoolbox
 output: BiocStyle::html_document
