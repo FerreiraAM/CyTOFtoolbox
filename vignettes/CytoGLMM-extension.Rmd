@@ -101,6 +101,7 @@ data_for_volplot <- prepare_data_for_volcanoplot(data = df_raw,
 # Volcano plot
 volcano_plot(data = data_for_volplot)
 ```
+
 # Session information
 
 ```{r sessioninfo}
